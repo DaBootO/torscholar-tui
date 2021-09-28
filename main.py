@@ -1,8 +1,5 @@
 import urwid
 
-# class PointerBox(urwid.Overlay):
-#     def __init__(self):
-
 
 def exit_on_q(key):
     if key in ('q', 'Q'):
@@ -56,7 +53,6 @@ middle = urwid.Columns([('weight', 1, buttonpile), ('weight', 1, mid_fill2), ('w
 pg_bar = urwid.ProgressBar('progress_start', 'progress_end')
 bottom = urwid.LineBox(urwid.Filler(pg_bar))
 
-print("Test")
 
 simple_walk = urwid.SimpleFocusListWalker([('weight', 1, top), ('weight', 5, middle), ('weight', 1, bottom)])
 pile = urwid.Pile(simple_walk)

@@ -59,5 +59,5 @@ pile = urwid.Pile(simple_walk)
 
 main_frame = urwid.Frame(pile)
 main_frame.set_footer(footer)
-loop = urwid.MainLoop(pile, palette, unhandled_input=exit_on_q)
+loop = urwid.MainLoop(main_frame, palette, unhandled_input=exit_on_q)
 loop.run()

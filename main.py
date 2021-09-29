@@ -1,4 +1,5 @@
 # internal imports
+from sys import stderr, stdout
 from GoogleParser.scholar import Error
 from src.torchecking import torchecker
 from src.parser import automator
@@ -86,9 +87,12 @@ class GraphView(urwid.WidgetWrap):
         for cb in self.checkboxlist:
             if cb.get_state() == True:
                 self.years.append(cb.get_label().split('-'))
-        query_texts = [q.strip() for q in self.query_box.get_text()[0].split('\n') if q.strip() != '']
-        self.addText2TextWidget(self.right_text_box, str(query_texts))
-        # automator.main(query_texts, years)
+        self.query_texts = [q.strip() for q in self.query_box.get_text()[0].split('\n') if q.strip() != '']
+        # self.addText2TextWidget(self.right_text_box, str(self.stdout))
+        # print('!'*100)
+        # print(self.stdout)
+        # print('!'*100)
+        automator.main(self.query_texts, self.years, self.stdout, self.stderr)
         
 
 
@@ -190,10 +194,10 @@ class GraphController:
 
     def main(self):
         self.loop = urwid.MainLoop(self.view, self.view.palette, unhandled_input=self.view.exit_on_q)
-        stdout = self.loop.watch_pipe(self.view.update_text)
-        stderr = self.loop.watch_pipe(self.view.update_text)
-        self.view.stdout = stdout
-        self.view.stderr = stderr
+        self.stdout = self.loop.watch_pipe(self.view.update_text)
+        self.stderr = self.loop.watch_pipe(self.view.update_text)
+        self.view.stdout = self.stdout
+        self.view.stderr = self.stderr
         self.loop.run()
 
 

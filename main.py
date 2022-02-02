@@ -92,7 +92,7 @@ class GraphView(urwid.WidgetWrap):
         # print('!'*100)
         # print(self.stdout)
         # print('!'*100)
-        automator.main(self.query_texts, self.years, self.stdout, self.stderr)
+        automator.main(self.query_texts, self.years)
         
 
 

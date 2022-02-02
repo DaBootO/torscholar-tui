@@ -10,16 +10,16 @@ def execute(cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOU
     lines = []
     # Poll process for new output until finished
     while True:
-        # nextline = process.stdout.readline()
-        nextline_out, nextline_err = process.communicate()
+        nextline = process.stdout.readline()
+        # nextline_out, nextline_err = process.communicate()
         print('#'*100)
         print("HELP"*100)
         print('#'*100)
         if nextline.decode() == '' and process.poll()  is not None:
             break
 
-        lines.append(nextline_out.decode())
-        sys.stdout.write(nextline_out.decode())
+        lines.append(nextline.decode())
+        sys.stdout.write(nextline.decode())
         sys.stdout.flush()
 
     output = process.communicate(timeout=0.2)[0]
@@ -30,7 +30,7 @@ def execute(cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOU
     else:
         raise subprocess.CalledProcessError(exitCode, cmd)
 
-def main(querys, years, stdout_subproc_main=subprocess.PIPE, stderr_subproc_main=subprocess.STDOUT):
+def main(querys, years):
     present_files = os.listdir()
     automator_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
     filetemplate = '%s_%s-%s.csv'

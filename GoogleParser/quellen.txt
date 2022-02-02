@@ -1,4 +1,0 @@
-https://github.com/DeyaaMuhammad/GimmeProxyApi
-./scholar.py -t --cookie-file="~/.mozilla/firefox/kby5yj94.default-release" --csv-header --no-patents --after=1976 --before=1980 -p "selection of,OR,selection for" -A material >> test160.csv
-./scholar.py -t --cookie-file="~/.mozilla/firefox/kby5yj94.default-release" --csv-header --no-patents --after=1976 --before=1980 -p "selection of,OR,selection for" -A material >> test160.csv
-

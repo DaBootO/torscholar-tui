@@ -1,6 +1,5 @@
 # internal imports
 from sys import stderr, stdout
-from GoogleParser.scholar import Error
 from src.torchecking import torchecker
 from src.parser import automator
 

@@ -185,6 +185,7 @@ from random_user_agent.params import SoftwareName, OperatingSystem
 num_of_results = None
 busted = None
 stopprocess = None
+CONTROLLER_PASS = "testpassword"
 
 try:
     # Try importing for Python 3
@@ -1239,7 +1240,7 @@ class ScholarQuerier(object):
         old_ip = self.get_current_ip(output=False)
 
         with Controller.from_port(port=9051) as controller:
-            controller.authenticate(password="testpassword")
+            controller.authenticate(password=CONTROLLER_PASS)
             controller.signal(Signal.NEWNYM)
 
         time.sleep(3)

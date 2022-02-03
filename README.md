@@ -65,7 +65,7 @@ To Do:\
 ### python modules
 We will be using `pip3` to install all needed modules for python. Just run: 
 
->`pip3 install stem random_user_agent beautifulsoup4 urwid`
+>`pip3 install stem random_user_agent beautifulsoup4 urwid pandas openpyxl`
 
 Every other module *should* be already installed, if not just install them with `pip3 install $MODULE_NAME$`. You cannot use `pip seach *` atm, but you can search on the [PyPI Website](https://pypi.org).
 

@@ -180,6 +180,12 @@ from stem.control import Controller
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
 
+
+
+num_of_results = None
+busted = None
+stopprocess = None
+
 try:
     # Try importing for Python 3
     # pylint: disable-msg=F0401
@@ -215,13 +221,6 @@ else:
         else:
             return str(s)
 
-num_of_results = None
-busted = None
-stopprocess = None
-CONTROLLER_PASS = "testpassword"
-
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
 
 class Error(Exception):
     """Base class for any Scholar error."""
@@ -427,7 +426,7 @@ class ScholarArticleParser(object):
         for div in self.soup.findAll('div'):
 
             if div.get('id') == "gs_captcha_c" or div.get('id') == "recaptcha":
-                print('Captcha detected!')
+                print('##### FBI! OPEN THE DOOR! #####')
                 file_html = self.soup.prettify("utf-8")
                 with open("captured.html", "wb") as file:
                     file.write(file_html)
@@ -892,7 +891,8 @@ class SearchScholarQuery(ScholarQuery):
 
     def set_words(self, words):
         """Sets words that *all* must be found in the result."""
-        print("Words:\n" + words.replace('"',''))
+        print("Words are...")
+        print(words.replace('"',''))
         self.words = words.replace('"','')
 
     def set_words_some(self, words):
@@ -906,7 +906,8 @@ class SearchScholarQuery(ScholarQuery):
     def set_phrase(self, phrase):
         """Sets phrase that must be found in the result exactly."""
         self.phrase = self._parenthesize_phrases(phrase)
-        print("Phrases:\n"+self.phrase)
+        print("DAS IST PHRASE!")
+        print(self.phrase)
 
     def set_scope(self, title_only):
         """
@@ -1238,7 +1239,7 @@ class ScholarQuerier(object):
         old_ip = self.get_current_ip(output=False)
 
         with Controller.from_port(port=9051) as controller:
-            controller.authenticate(password=CONTROLLER_PASS)
+            controller.authenticate(password="testpassword")
             controller.signal(Signal.NEWNYM)
 
         time.sleep(3)
@@ -1524,8 +1525,8 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
     UA_rotator = UserAgent(software_names = soft_vals, operating_systems = os_vals, limit=250)
     ScholarConf.USER_AGENT = UA_rotator.get_random_user_agent()
     # print(querier.articles)
-    eprint("Following query was issued to GS:")
-    eprint(query.SCHOLAR_QUERY_URL % query.urlargs)
+    print("Following query was issued to GS:")
+    print(query.SCHOLAR_QUERY_URL % query.urlargs)
     global busted
     global stopprocess
     # print("We have", num_of_results, " Results!!!")

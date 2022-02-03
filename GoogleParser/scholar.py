@@ -169,16 +169,10 @@ import warnings
 import random
 import time
 import sys
-import kbhit
+# import GimmeProxyAPI
 
-# TOR Additions
-import requests
-from stem import Signal
-from stem.control import Controller
-# import RandomUserAgent
-
-from random_user_agent.user_agent import UserAgent
-from random_user_agent.params import SoftwareName, OperatingSystem
+# proxy = GimmeProxyAPI.GimmeProxyAPI(protocol="http")
+num_of_results = None
 
 try:
     # Try importing for Python 3
@@ -215,13 +209,6 @@ else:
         else:
             return str(s)
 
-num_of_results = None
-busted = None
-stopprocess = None
-CONTROLLER_PASS = "testpassword"
-
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
 
 class Error(Exception):
     """Base class for any Scholar error."""
@@ -262,12 +249,12 @@ class ScholarConf(object):
     VERSION = '2.10'
     LOG_LEVEL = 1
     MAX_PAGE_RESULTS = 10 # Current default for per-page results
-    SCHOLAR_SITE = 'https://scholar.google.com'
+    SCHOLAR_SITE = 'http://scholar.google.de'
 
     # USER_AGENT = 'Mozilla/5.0 (X11; U; FreeBSD i386; en-US; rv:1.9.2.9) Gecko/20100913 Firefox/3.6.9'
     # Let's update at this point (3/14):
-    # USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0'
-    USER_AGENT = 'Mozilla/5.0 (Linux; Android 6.0; P027 Build/MRA58L) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Safari/537.36'
+    USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:27.0) Gecko/20100101 Firefox/27.0'
+    # USER_AGENT = 'Mozilla/5.0 (Linux; Android 6.0; P027 Build/MRA58L) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Safari/537.36'
     # If set, we will use this file to read/save cookies to enable
     # cookie use across sessions.
     COOKIE_JAR_FILE = None
@@ -416,34 +403,6 @@ class ScholarArticleParser(object):
         # print("TEST ARTS")
         # print(self.soup.findAll(ScholarArticleParser._tag_results_checker))
         # Now parse out listed articles:
-        # print("check for CAPTCHA...")
-        #HERE WE CHECK IF CAPTCHA IS PRESENT
-        global busted
-
-        if "Error" in self.soup.title.text:
-            busted = True
-            return None
-
-        for div in self.soup.findAll('div'):
-
-            if div.get('id') == "gs_captcha_c" or div.get('id') == "recaptcha":
-                print('Captcha detected!')
-                file_html = self.soup.prettify("utf-8")
-                with open("captured.html", "wb") as file:
-                    file.write(file_html)
-                # print('We got busted... maybe change IP and try the captcha?')
-                busted = True
-                return None
-
-        if not busted:
-            # for div in self.soup.findAll('div'):
-            #     print(div.get('id'), '\n')
-            print("There is no captcha!")
-            file_html = self.soup.prettify("utf-8")
-            with open("output.html", "wb") as file:
-                file.write(file_html)
-
-
         for div in self.soup.findAll(ScholarArticleParser._tag_results_checker):
             # print(div)
             self._parse_article(div)
@@ -667,7 +626,6 @@ class ScholarArticleParser120726(ScholarArticleParser):
                     continue
 
             if tag.name == 'div' and self._tag_has_class(tag, 'gs_ri'):
-                # print(tag)
                 # There are (at least) two formats here. In the first
                 # one, we have a link, e.g.:
                 #
@@ -692,8 +650,6 @@ class ScholarArticleParser120726(ScholarArticleParser):
                 # We now distinguish the two.
                 try:
                     atag = tag.h3.a
-                    #print("#"*20)
-                    #print(atag.findAll(text=True))
                     self.article['title'] = ''.join(atag.findAll(text=True))
                     # print("FROM <a>")
                     # print(self.article['title'])
@@ -799,13 +755,12 @@ class ScholarQuery(object):
         # print("DEBUG")
         phrases = []
         for phrase in query.split(','):
-            phrase = phrase.strip().replace("'","")
+            phrase = phrase.strip()
             if phrase.find(' ') > 0:
                 phrase = '"' + phrase + '"'
-                # phrase = phrase
             elif phrase == "OR":
                 phrase = "OR"
-            phrases.append(phrase.replace('""','"'))
+            phrases.append(phrase)
         return ' '.join(phrases)
 
 
@@ -892,8 +847,7 @@ class SearchScholarQuery(ScholarQuery):
 
     def set_words(self, words):
         """Sets words that *all* must be found in the result."""
-        print("Words:\n" + words.replace('"',''))
-        self.words = words.replace('"','')
+        self.words = words
 
     def set_words_some(self, words):
         """Sets words of which *at least one* must be found in result."""
@@ -906,7 +860,6 @@ class SearchScholarQuery(ScholarQuery):
     def set_phrase(self, phrase):
         """Sets phrase that must be found in the result exactly."""
         self.phrase = self._parenthesize_phrases(phrase)
-        print("Phrases:\n"+self.phrase)
 
     def set_scope(self, title_only):
         """
@@ -1206,7 +1159,6 @@ class ScholarQuerier(object):
         """
         This method allows parsing of provided HTML content.
         """
-
         parser = self.Parser(self)
         parser.parse(html)
 
@@ -1234,35 +1186,6 @@ class ScholarQuerier(object):
             ScholarUtils.log('warn', 'could not save cookies file: %s' % msg)
             return False
 
-    def renew_tor_ip(self):
-        old_ip = self.get_current_ip(output=False)
-
-        with Controller.from_port(port=9051) as controller:
-            controller.authenticate(password=CONTROLLER_PASS)
-            controller.signal(Signal.NEWNYM)
-
-        time.sleep(3)
-
-        while old_ip == self.get_current_ip(output=False):
-            time.sleep(5)
-
-    def get_current_ip(self, output=True):
-        session = requests.session()
-
-        # TO Request URL with SOCKS over TOR
-        session.proxies = {}
-        session.proxies['http'] = 'socks5h://localhost:9050'
-        session.proxies['https'] = 'socks5h://localhost:9050'
-
-        try:
-            ip = session.get('http://httpbin.org/ip')
-        except Exception as e:
-            print(str(e))
-        else:
-            if output==True:
-                print("We are sending from", ip.text.split()[2].replace('"',''))
-            return ip.text.split()[2].replace('"','')
-
     def _get_http_response(self, url, log_msg=None, err_msg=None):
         """
         Helper method, sends HTTP request and returns response payload.
@@ -1272,44 +1195,24 @@ class ScholarQuerier(object):
         if err_msg is None:
             err_msg = 'request failed'
         try:
-            # self.get_current_ip()
             ScholarUtils.log('info', 'requesting %s' % unquote(url))
 
-            session = requests.session()
-
-            # TO Request URL with SOCKS over TOR
-            session.proxies = {}
-            session.proxies['http'] = 'socks5h://localhost:9050'
-            session.proxies['https'] = 'socks5h://localhost:9050'
-
-            headers = {
-                'User-Agent': ScholarConf.USER_AGENT
-            }
-
-            try:
-                html = session.get(url, headers=headers)
-            except Exception as e:
-                print(str(e))
-
-            # OLD urllib REQUEST!!!
-            # req = Request(url=url, headers={'User-Agent': ScholarConf.USER_AGENT})
-            # hdl = self.opener.open(req)
-            # html = hdl.read()
-
+            req = Request(url=url, headers={'User-Agent': ScholarConf.USER_AGENT})
+            hdl = self.opener.open(req)
+            html = hdl.read()
             # print("HERE IS THE HTML")
             # print(html)
             ScholarUtils.log('debug', log_msg)
             ScholarUtils.log('debug', '>>>>' + '-'*68)
-            # ScholarUtils.log('debug', 'url: %s' % hdl.geturl())
-            # ScholarUtils.log('debug', 'result: %s' % hdl.getcode())
-            # ScholarUtils.log('debug', 'headers:\n' + str(hdl.info()))
-            # ScholarUtils.log('debug', 'data:\n' + html.decode('utf-8')) # For Python 3
-            ScholarUtils.log('debug', 'data:\n' + html.text) # For Python 3
+            ScholarUtils.log('debug', 'url: %s' % hdl.geturl())
+            ScholarUtils.log('debug', 'result: %s' % hdl.getcode())
+            ScholarUtils.log('debug', 'headers:\n' + str(hdl.info()))
+            ScholarUtils.log('debug', 'data:\n' + html.decode('utf-8')) # For Python 3
             ScholarUtils.log('debug', '<<<<' + '-'*68)
 
-            return html.text
+            return html
         except Exception as err:
-            print('info', err_msg + ': %s' % err)
+            # print('info', err_msg + ': %s' % err)
             ScholarUtils.log('info', err_msg + ': %s' % err)
             return None
 
@@ -1335,8 +1238,8 @@ def txt(querier, with_globals):
                 # print("DEBUG11")
                 print(fmt % (item[1], item[0]))
 
-        # if len(items) > 0:
-            # print
+        if len(items) > 0:
+            print
             # print("DEBUG22")
 
     articles = querier.articles
@@ -1503,57 +1406,11 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
         options.count = min(options.count, ScholarConf.MAX_PAGE_RESULTS)
         query.set_num_page_results(options.count)
 
-    # querier.renew_tor_ip()
-    # time.sleep(5)
-    querier.get_current_ip()
     querier.send_query(query)
-
-    kb = kbhit.KBHit()
-
-
-    soft_vals = [SoftwareName.OPERA.value,
-                SoftwareName.CHROME.value,
-                SoftwareName.EDGE.value,
-                SoftwareName.FIREFOX.value]
-
-    os_vals = [OperatingSystem.ANDROID.value,
-               OperatingSystem.WINDOWS.value,
-               OperatingSystem.LINUX.value,
-               OperatingSystem.CHROMEOS.value]
-
-    UA_rotator = UserAgent(software_names = soft_vals, operating_systems = os_vals, limit=250)
-    ScholarConf.USER_AGENT = UA_rotator.get_random_user_agent()
     # print(querier.articles)
-    eprint("Following query was issued to GS:")
-    eprint(query.SCHOLAR_QUERY_URL % query.urlargs)
-    global busted
-    global stopprocess
+    print("Following query was issued to GS:")
+    print(query.SCHOLAR_QUERY_URL % query.urlargs)
     # print("We have", num_of_results, " Results!!!")
-    while busted == True:
-        ScholarConf.USER_AGENT = UA_rotator.get_random_user_agent()
-        querier.renew_tor_ip()
-        # time.sleep(2)
-        querier.get_current_ip()
-        # print("Solve the Captcha here:")
-        # print(query.get_url())
-        # print("Press Enter when finished...")
-        # input()
-
-        if kb.kbhit():
-            if kb.getch() == "q":
-                print("manually halted, because the parser could not continue...")
-                break
-            if kb.getch() == "n":
-                print("start_num is", query.start)
-            if kb.getch() == "x":
-                print("Do you want to cancel and use the Articles you have?\n")
-                answer = input("y/n \n")
-                if answer == ("y" or "Y"):
-                    stopprocess = True
-
-        busted = False
-        querier.send_query(query)
-
     if num_of_results == None:
         print("There are no articles in this time period!")
         sys.exit()
@@ -1561,86 +1418,26 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
     resb1 = 0
     resb2 = 0
 
-    revolutions_in_same_result_pit = 0
 
-    while len(querier.articles) < num_of_results:
-
+    while len(querier.articles) != num_of_results:
         # print("DEBUG!!!")
         # print(len(querier.articles), num_of_results)
-        # print(query.get_url())
         print("we have %s articles of %s total!" % (len(querier.articles), num_of_results))
-        random_wait = random.randint(1, 5)
+        random_wait = random.randint(480, 960)
         print("We will wait for %s seconds..." % random_wait)
         time.sleep(random_wait)
         query.set_start(10)
         querier.send_query(query)
 
-        while busted == True:
-            print("we have %s articles of %s total!" % (len(querier.articles), num_of_results))
-            querier.renew_tor_ip()
-            # time.sleep(5)
-            querier.get_current_ip()
-            # print("Solve the Captcha here:")
-            # print(query.get_url())
-            # print("Press Enter when finished...")
-            # input()
-            busted = False
-
-            if kb.kbhit():
-                if kb.getch() == "q":
-                    print("manually halted, because the parser could not continue...")
-                    break
-                if kb.getch() == "n":
-                    print("start_num is", query.start)
-                if kb.getch() == "x":
-                    print("Do you want to cancel and use the Articles you have?\n")
-                    answer = input("y/n \n")
-                    if answer == ("y" or "Y"):
-                        stopprocess = True
-
-            querier.send_query(query)
-
-        if len(querier.articles) + 1 == num_of_results:
-            print("Probably only one missing!")
-            break
-
-
-
         resb2 = resb1
         resb1 = len(querier.articles)
-        print(resb1, resb2)
-        articles_num_before = len(querier.articles)
-        while resb1 == resb2:
-            revolutions_in_same_result_pit += 1
-            if kb.kbhit():
-                if kb.getch() == "q":
-                    print("manually halted, because the parser could not continue...")
-                    break
-                if kb.getch() == "n":
-                    print("start_num is", query.start)
-            print("We are inside the 'same results' loop")
-            print("we have %s articles of %s total!" % (len(querier.articles), num_of_results))
-            querier.renew_tor_ip()
-            # time.sleep(5)
-            querier.get_current_ip()
-            querier.send_query(query)
 
-            resb2 = resb1
-            resb1 = len(querier.articles)
-            print("We are at revolution ", revolutions_in_same_result_pit)
-            if len(querier.articles) > 0.97*num_of_results and revolutions_in_same_result_pit >= 20:
-                stopprocess = True
-                break
-
-        if stopprocess == True:
-            print("Process stopped!")
+        if resb1 == resb2:
+            print(resb1, resb2)
+            print("We were not able to parse any more articles!")
+            if len(querier.articles) + 1 == num_of_results:
+                print("Probably only one missing!")
             break
-
-            # print(resb1, resb2)
-            # print("We were not able to parse any more articles!")
-            # if len(querier.articles) + 1 == num_of_results:
-            #     print("Probably only one missing!")
-            # break
 
 
     if options.csv:
@@ -1650,7 +1447,6 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
     elif options.citation is not None:
         citation_export(querier)
     else:
-        x = 0
         txt(querier, with_globals=options.txt_globals)
 
     if options.cookie_file:

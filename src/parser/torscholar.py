@@ -1346,7 +1346,7 @@ def csv(querier, header=False, sep='|'):
     articles = querier.articles
     for art in articles:
         result = art.as_csv(header=header, sep=sep)
-        print(encode(result))
+        eprint(encode(result))
         header = False
 
 def citation_export(querier):

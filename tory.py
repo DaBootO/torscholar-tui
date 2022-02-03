@@ -102,7 +102,7 @@ class GraphView(urwid.WidgetWrap):
 
     def update_text(self, read_data):
         self.addText2TextWidget(self.right_text_box, read_data)
-        # self.saveLines(read_data)
+        self.saveLines(read_data)
 
     def execute(self, cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
         process = subprocess.Popen(shlex.split(cmd, posix=False), shell=False, stdout=stdout_subproc, stderr=stderr_subproc)
@@ -126,10 +126,6 @@ class GraphView(urwid.WidgetWrap):
             raise subprocess.CalledProcessError(exitCode, cmd)
         
     def automator(self, years=[], queries=[], stdout_external=subprocess.PIPE, stderr_external=subprocess.STDOUT):
-        queries = [
-        ["choice of", "welding process", "choice_of_welding_process"],
-        ["choice of", "weldinglingidasndiasdj process", "choice_of_welding_process"]
-        ]
         
         if years == [] or queries == []:
             print("Input years and queries!")
@@ -171,6 +167,9 @@ class GraphView(urwid.WidgetWrap):
                 # lines = execute(command)
                 # pdb.set_trace()
                 lines = self.execute(command, stdout_subproc=stdout_external, stderr_subproc=stderr_external)
+                
+                # self.update_text(str(self.pipelines))
+                
                 # if search_type == 1:
                 #     with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
                 #         f.writelines(lines)
@@ -186,8 +185,20 @@ class GraphView(urwid.WidgetWrap):
         for cb in self.yearlist:
             if cb.state == True:
                 self.years.append(cb.get_label().split('-'))
+        
+        self.queries = []
+        query_all_text = self.query_box.text
+        query_lines = query_all_text.split('\n')
+        
+        for l in query_lines:
+            query_text = l.split(',')
+            query_text = [t.strip() for t in query_text]
+            self.queries.append(query_text)
+        
+        # self.update_text(str(self.queries))
+        
         # pipe = automator.main(years=self.years, stdout_external=self.stdout, stderr_external=self.stderr)
-        pipe = self.automator(years=self.years, stdout_external=self.stdout, stderr_external=self.stderr)
+        pipe = self.automator(years=self.years, queries=self.queries, stdout_external=self.stdout, stderr_external=self.stderr)
 
     def on_animate_button(self, button):
         """Toggle started state and button text."""
@@ -291,7 +302,7 @@ class GraphController:
         screen = urwid.raw_display.Screen()
         self.loop = urwid.MainLoop(self.view, self.view.palette, unhandled_input=self.view.exit_on_q, screen=screen)
         stdout = self.loop.watch_pipe(self.view.update_text)
-        stderr = self.loop.watch_pipe(self.view.update_text)
+        stderr = self.loop.watch_pipe(self.view.saveLines)
         self.view.stdout = stdout
         self.view.stderr = stderr
         self.view.loopie = self.loop

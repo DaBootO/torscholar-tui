@@ -1,3 +1,4 @@
+import time
 import openpyxl
 import os
 import string
@@ -6,17 +7,18 @@ items = 12
 
 letters = string.ascii_uppercase
 
-directory = "/home/dabooto/PycharmProjects/GoogleParser/data/"
-saveto = "/home/dabooto/PycharmProjects/GoogleParser/data/output/"
+directory = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+directory_data = os.path.join(directory, "data/")
+saveto = os.path.join(directory, "data/", "output/")
 data = [] # [[name, yearlow, yearhigh, positives]]
 
-for file in os.listdir(directory):
+for file in os.listdir(directory_data):
     # print(file)
     positives = 0
     negatives = 0
 
     if file.split('.')[-1] == "xlsx":
-        wb = openpyxl.load_workbook(filename=directory + str(file))
+        wb = openpyxl.load_workbook(filename=directory_data + str(file))
         ws = wb.active
 
         for cell in ws['A']:
@@ -66,6 +68,7 @@ for dp in data:
     col_index += 1
     ws.cell(row=row_index, column=col_index).value = yearlow+'-'+yearhigh
     row_index += 1
-
-wb.save(saveto+"data_output2.xlsx")
+if not os.path.exists(saveto):
+    os.mkdir(saveto)
+wb.save(saveto+"data_output"+ time.strftime("%d%m%y_%H%M%S") +".xlsx")
 

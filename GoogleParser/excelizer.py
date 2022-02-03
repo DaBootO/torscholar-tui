@@ -5,9 +5,11 @@ import fileinput
 items = 12
 # thereisfaulty = None
 # newline = None
-directory = "/home/dabooto/PycharmProjects/GoogleParser/SendToShared/"
+# directory = "/home/dabooto/PycharmProjects/GoogleParser/SendToShared/"
+directory = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+# print(directory)
 for file in os.listdir(directory):
-    print(directory+str(file))
+    # print(directory+str(file))
     if file.endswith(".csv"):
         f = open(directory+str(file), 'r')
         lines = f.readlines()
@@ -57,4 +59,6 @@ for file in os.listdir(directory):
             #     thereisfaulty = False
 
             read_file = pd.read_table(directory+str(file), sep="|", names=labels)
-            read_file.to_excel ("./excel/"+file[:-4]+".xlsx", index = None, header=False)
+            if not os.path.exists(os.path.join(directory, "excel/")):
+                os.mkdir(os.path.join(directory, "excel/"))
+            read_file.to_excel(directory+"excel/"+file[:-4]+".xlsx", index = None, header=False)

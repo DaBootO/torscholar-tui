@@ -7,13 +7,14 @@ items = 12
 # newline = None
 letters = string.ascii_uppercase
 
-directory = "/home/dabooto/PycharmProjects/GoogleParser/excel/backup/"
-saveto = "/home/dabooto/PycharmProjects/GoogleParser/excel/backup/finished/"
-for file in os.listdir(directory):
+directory = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+directory_excel = os.path.join(directory, "excel/")
+saveto = os.path.join(directory, "excel/", "finished/")
+for file in os.listdir(directory_excel):
     # print(file)
     if file.split('.')[-1] == "xlsx":
         print(file, "is being processed...")
-        wb = openpyxl.load_workbook(filename=directory+str(file))
+        wb = openpyxl.load_workbook(filename=directory_excel+str(file))
         ws = wb.active
         rows = len(tuple(ws.rows))
         columns = len(tuple(ws.columns))
@@ -23,4 +24,6 @@ for file in os.listdir(directory):
         ws['B1'] = "comment"
         ws.column_dimensions['C'].width = 100.0
         ws.column_dimensions['D'].width = 100.0
+        if not os.path.exists(saveto):
+                os.mkdir(saveto)
         wb.save(saveto+str(file))

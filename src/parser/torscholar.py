@@ -169,13 +169,11 @@ import warnings
 import random
 import time
 import sys
-import kbhit
 
 # TOR Additions
 import requests
 from stem import Signal
 from stem.control import Controller
-# import RandomUserAgent
 
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
@@ -892,7 +890,7 @@ class SearchScholarQuery(ScholarQuery):
 
     def set_words(self, words):
         """Sets words that *all* must be found in the result."""
-        print("Words:\n" + words.replace('"',''))
+        eprint("Words:\n" + words.replace('"',''))
         self.words = words.replace('"','')
 
     def set_words_some(self, words):
@@ -906,7 +904,7 @@ class SearchScholarQuery(ScholarQuery):
     def set_phrase(self, phrase):
         """Sets phrase that must be found in the result exactly."""
         self.phrase = self._parenthesize_phrases(phrase)
-        print("Phrases:\n"+self.phrase)
+        eprint("Phrases:\n"+self.phrase)
 
     def set_scope(self, title_only):
         """
@@ -1508,9 +1506,6 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
     querier.get_current_ip()
     querier.send_query(query)
 
-    kb = kbhit.KBHit()
-
-
     soft_vals = [SoftwareName.OPERA.value,
                 SoftwareName.CHROME.value,
                 SoftwareName.EDGE.value,
@@ -1524,8 +1519,8 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
     UA_rotator = UserAgent(software_names = soft_vals, operating_systems = os_vals, limit=250)
     ScholarConf.USER_AGENT = UA_rotator.get_random_user_agent()
     # print(querier.articles)
-    eprint("Following query was issued to GS:")
-    eprint(query.SCHOLAR_QUERY_URL % query.urlargs)
+    print("Following query was issued to GS:")
+    print(query.SCHOLAR_QUERY_URL % query.urlargs)
     global busted
     global stopprocess
     # print("We have", num_of_results, " Results!!!")
@@ -1538,18 +1533,6 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
         # print(query.get_url())
         # print("Press Enter when finished...")
         # input()
-
-        if kb.kbhit():
-            if kb.getch() == "q":
-                print("manually halted, because the parser could not continue...")
-                break
-            if kb.getch() == "n":
-                print("start_num is", query.start)
-            if kb.getch() == "x":
-                print("Do you want to cancel and use the Articles you have?\n")
-                answer = input("y/n \n")
-                if answer == ("y" or "Y"):
-                    stopprocess = True
 
         busted = False
         querier.send_query(query)
@@ -1586,18 +1569,6 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
             # input()
             busted = False
 
-            if kb.kbhit():
-                if kb.getch() == "q":
-                    print("manually halted, because the parser could not continue...")
-                    break
-                if kb.getch() == "n":
-                    print("start_num is", query.start)
-                if kb.getch() == "x":
-                    print("Do you want to cancel and use the Articles you have?\n")
-                    answer = input("y/n \n")
-                    if answer == ("y" or "Y"):
-                        stopprocess = True
-
             querier.send_query(query)
 
         if len(querier.articles) + 1 == num_of_results:
@@ -1612,12 +1583,6 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
         articles_num_before = len(querier.articles)
         while resb1 == resb2:
             revolutions_in_same_result_pit += 1
-            if kb.kbhit():
-                if kb.getch() == "q":
-                    print("manually halted, because the parser could not continue...")
-                    break
-                if kb.getch() == "n":
-                    print("start_num is", query.start)
             print("We are inside the 'same results' loop")
             print("we have %s articles of %s total!" % (len(querier.articles), num_of_results))
             querier.renew_tor_ip()

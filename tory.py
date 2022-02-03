@@ -198,6 +198,7 @@ class GraphView(urwid.WidgetWrap):
             if not self.connected_to_tor:
                 self.started = False
                 self.update_text("Connect to tor first!")
+                self.update_text("run 'sudo service tor start'")
             else:
                 button.set_label("Stop")
                 self.started = True

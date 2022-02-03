@@ -203,6 +203,7 @@ class GraphView(urwid.WidgetWrap):
     def on_animate_button(self, button):
         """Toggle started state and button text."""
         if self.started: # stop animation
+            # self.update_text(str(self.pipelines))
             button.set_label("Start")
             self.started = False
         else:

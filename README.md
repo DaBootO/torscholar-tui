@@ -97,4 +97,4 @@ OR
 
 > `["$words$", "$final_filename$"]`
 
-`$final_filename$` should be the concatenation of the elements of the string list with underscores as the spacing between words (this way it is easier to further analyse the datasets).
+`$final_filename$` should be the concatenation of the elements of the string list with underscores as the spacing between words (this way it is easier to further analyse the datasets). The years etc. will automatically be appended to the filename.

@@ -80,21 +80,21 @@ To Do:\
 ## queries
 ---
 There are two different query types:
-- >`["selOFORFOR", "welding process", "selOFORFOR_welding_process"]`
+- >`selOFORFOR, welding process, selOFORFOR_welding_process`
 
 **AND**
 
-- >`["welding process", "welding_process"]`
+- >`welding process, welding_proces`
 
-The first one uses the torscholar -p option for the `"selOFORFOR"` phrase. This means that the parser will search for titles which include **exactly** `"selection of" or "selection for"` in the search query. This also works for the query of `"choice of"` if the first string is `"choice of"`.\
+The first one uses the torscholar -p option for the `selOFORFOR` phrase. This means that the parser will search for titles which include **exactly** `"selection of" or "selection for"` in the search query. This also works for the query of `"choice of"` if the first string is `choice of`.\
 The second one also uses the -p option to look for articles which include **exactly** `"welding process"` in their title.
 
-You have to insert the queries you want to parse exactly in this format into the *queries box* in the `tory.py` TUI:
+You have to insert the queries you want to parse exactly in this format into the *queries box* in the `tory.py` TUI and separate them with a new-line:
 
-> `["selOFORFOR/choice of", "$words$", "$final_filename$"]`
+> `selOFORFOR/choice of, $words$, $filename$`
 
 OR
 
-> `["$words$", "$final_filename$"]`
+> `$words$, $filename$`
 
-`$final_filename$` should be the concatenation of the elements of the string list with underscores as the spacing between words (this way it is easier to further analyse the datasets). The years etc. will automatically be appended to the filename.
+`$filename$` should be the concatenation of the elements of the string list with underscores as the spacing between words (this way it is easier to further analyse the datasets). The years etc. will automatically be appended to the filename.

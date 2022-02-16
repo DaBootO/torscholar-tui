@@ -84,7 +84,7 @@ There are two different query types:
 
 **AND**
 
-- >`welding process, welding_proces`
+- >`welding process, welding_process`
 
 The first one uses the torscholar -p option for the `selOFORFOR` phrase. This means that the parser will search for titles which include **exactly** `"selection of" or "selection for"` in the search query. This also works for the query of `"choice of"` if the first string is `choice of`.\
 The second one also uses the -p option to look for articles which include **exactly** `"welding process"` in their title.

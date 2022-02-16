@@ -29,58 +29,88 @@ def execute(cmd):
 
 present_files = os.listdir()
 
-# years = [[1946, 1950],
-#          [1951, 1955],
-#          [1956, 1960],
-#          [1961, 1965],
-#          [1966, 1970],
-#          [1971, 1975],
-#          [1976, 1980],
-#          [1981, 1985],
-#          [1986, 1990],
-#          [1991, 1995],
-#          [1996, 2000],
-#          [2001, 2005],
-#          [2006, 2010],
-#          [2011, 2015],
-#          [2016, 2020]]
+years = [[1946, 1950],
+         [1951, 1955],
+         [1956, 1960],
+         [1961, 1965],
+         [1966, 1970],
+         [1971, 1975],
+         [1976, 1980],
+         [1981, 1985],
+         [1986, 1990],
+         [1991, 1995],
+         [1996, 2000],
+         [2001, 2005],
+         [2006, 2010],
+         [2011, 2015],
+         [2016, 2020]]
 
-years = [[2001, 2005]]
+# years = [[2001, 2005]]
 
-querys = [
-    ["choice of", "welding process", "choice_of_welding_process"]
-]
+with open('query_templates/query_parts_finished.dat', 'r') as f:
+    lines = f.readlines()
+    
+lines = [line.strip() for line in lines]
+lines = [line.split(' ,') for line in lines]
+
+queries = []
+for line in lines:
+    if len(line) == 1:
+        filename = line[0].replace(' ', '_')
+        queries.append([line[0], filename])
+    elif len(line) == 2:
+        filename1 = line[0].replace(' ', '_')
+        filename2 = line[1].replace(' ', '_')
+        filename = filename1+'_'+filename2
+        queries.append([line[0], line[1], filename])
+
+# queries = [
+#     ["choice of", "welding process", "choice_of_welding_process"]
+# ]
 
 ###################################
 # select search type              #
 # 1 = SEL OF OR FOR && choice of  #
 # 2 = NORMAL                      #
 ###################################
-search_type = 1
+# search_type = 1
+
+
+# if search_type == 1:
+#     ## SEL OF OR FOR
+#     commandtemplate = 'python3 -u ' + working_directory + '/torscholar.py -t --csv-header --no-patents \
+#     --after=%s --before=%s -p "%s" -A "%s"'
+# else:
+#     # ### REST
+#     commandtemplate = 'python3 -u ' + working_directory + '/torscholar.py -t --csv-header --no-patents \
+#     --after=%s --before=%s -p "%s"'
 
 working_directory = os.getcwd()
-print(working_directory)
-
-if search_type == 1:
-    ## SEL OF OR FOR
-    commandtemplate = 'python3 -u ' + working_directory + '/torscholar.py -t --csv-header --no-patents \
-    --after=%s --before=%s -p "%s" -A "%s"'
-else:
-    # ### REST
-    commandtemplate = 'python3 -u ' + working_directory + '/torscholar.py -t --csv-header --no-patents \
-    --after=%s --before=%s -p "%s"'
-
+# print(working_directory)
 filetemplate = working_directory + '/%s_%s-%s.csv'
 check_template = '%s_%s-%s.csv'
 
-
-while len(querys) != 0:
-    query = querys.pop()
+while len(queries) != 0:
+    query = queries.pop()
+    if not isinstance(query, list):
+        query = [q.strip() for q in query.split('"') if q !='']
+    if "choice of" in query or "selOFORFOR" in query:
+        search_type = 1
+        if not isinstance(query, list):
+            query.append((query[0]+' '+query[1]).replace(' ', '_'))
+        ## SEL OF OR FOR
+        commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s" -A "%s"'
+    else:
+        search_type = 2
+        if not isinstance(query, list):
+            query.append((query[0]).replace(' ', '_'))
+        ### REST
+        commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s"'
+    
     for year in years:
-
-        if (check_template % (query[1], year[0], year[1])) in present_files:
-            print(filetemplate % (query[1], year[0], year[1]), " already exists! continuing...")
-            continue
+        # if (check_template % (query[1], year[0], year[1])) in present_files:
+        #     print(filetemplate % (query[1], year[0], year[1]), " already exists! continuing...")
+        #     continue
         if search_type == 1:
             command = commandtemplate % (year[0], year[1], query[0], query[1])
         else:

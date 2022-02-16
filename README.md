@@ -26,6 +26,9 @@ We will have to install the WSL (*Windows Subsystem for Linux*) to use a Linux s
 check in your commandline via:
 >`python --version`
 
+Update your package repositories via:
+>`sudo apt-get update`
+
 If your python version < 3.0 you can install it via:
 >`sudo apt-get install python3`
 ---
@@ -38,7 +41,7 @@ Now we have to activate the tor control port to allow our parser to request a ne
 We have to find the `torrc` file in `/etc/tor/torrc`
 
 You can either edit it via a commandline tool like `vim`, `emacs` or `nano` OR you can use your Windows tools like `notepad` or `notepad++` to edit the `torrc` file.\
-(If you try to open files on your WSL the path to the root directory is **`\\wsl.localhost`**\
+(If you try to open files on your WSL the path to the root directory is **`\\wsl.localhost`** (Win11) OR **`\\wsl$\Ubuntu`** (Win10)\
 Just insert it into your Explorer and you can traverse your Linux Subsystem)
 
 First you have to generate a salted hash for the password used by the controller. You can do this via:
@@ -63,9 +66,13 @@ To Do:\
 
 ---
 ### python modules
-We will be using `pip3` to install all needed modules for python. Just run: 
+We will be using `pip3` to install all needed modules for python. Just install the `python-pip3` package via
 
->`pip3 install stem random_user_agent beautifulsoup4 urwid pandas openpyxl`
+>`sudo apt-get install python-pip3`
+
+and run the following command to install all needed python modules:
+
+>`pip3 install stem random_user_agent beautifulsoup4 urwid pandas openpyxl pysocks`
 
 Every other module *should* be already installed, if not just install them with `pip3 install $MODULE_NAME$`. You cannot use `pip search *` atm, but you can search on the [PyPI Website](https://pypi.org).
 

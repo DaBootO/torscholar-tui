@@ -1,6 +1,5 @@
 # internal imports
 from sys import stderr, stdout
-from types import coroutine
 from src.torchecking import torchecker
 from src.parser import automator
 
@@ -13,8 +12,9 @@ import codecs
 import os
 import shlex
 import sys
-import asyncio
-import pdb
+import logging
+import multiprocessing
+import queue
 
 def button(self, t, fn):
         w = urwid.Button(t, fn)
@@ -52,6 +52,20 @@ years = [[1946, 1950],
          [2011, 2015],
          [2016, 2020]]
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)-4s %(processName)s %(message)s", 
+    datefmt="%H:%M:%S",
+    filename='trace.log',
+)
+
+def update_time(stop_event, msg_queue):
+    """send timestamp to queue every second"""
+    logging.info('start')
+    while not stop_event.wait(timeout=0.5):
+        msg_queue.put( time.strftime('time %X') )
+    logging.info('stop')
+
 class GraphView(urwid.WidgetWrap):
     """
     A class responsible for providing the application's interface and
@@ -68,10 +82,13 @@ class GraphView(urwid.WidgetWrap):
         ('streak', 'black', 'dark red'),
         ('bg', 'black', 'dark blue'),
         ('progress_start', 'black', 'white'),
-        ('progress_end', 'white', 'dark gray'),
+        ('progress_end', 'white', 'light green'),
         ('tor_correct', 'white', 'dark green'),
         ('tor_false', 'white', 'dark red')
     ]
+
+### queue bekommt message rein von subprozess
+### 
 
     def __init__(self, controller):
         self.loopie = urwid.MainLoop
@@ -86,56 +103,118 @@ class GraphView(urwid.WidgetWrap):
         self.yearlist = None
         self.pipelines = []
         urwid.WidgetWrap.__init__(self, self.main_window())
+        self.proc_pool = None
+        self.current_proc_num = 0
+        self.current_proc = None
+        self.num_procs = None
 
+    def check_process(self, loop, *_args):
+        """add message to bottom of screen"""
+        
+        try:
+            self.proc_pool[self.current_proc_num][0].join(timeout=0.1)
+            if self.proc_pool[self.current_proc_num][0].is_alive() or self.proc_pool[self.current_proc_num][0].exitcode == None:
+                loop.set_alarm_in(
+                    sec=1.0,
+                    callback=self.check_process,
+                )
+                return
+            else:
+                logging.info("Process #%s exited with exitcode %s" % (self.current_proc_num+1, self.proc_pool[self.current_proc_num][0].exitcode))
+                logging.info("Process #%s is of searchtype %s" % (self.current_proc_num+1, self.proc_pool[self.current_proc_num][1]))
+
+                self.csv_outputter(
+                    self.pipelines,
+                    self.proc_pool[self.current_proc_num][1],
+                    self.proc_pool[self.current_proc_num][2],
+                    self.proc_pool[self.current_proc_num][3]
+                )
+                
+                self.pg_bar.current = ((self.current_proc_num+1) * (self.pg_bar.done / float(self.num_procs)))
+                logging.info((self.current_proc_num+1) * (self.pg_bar.done / float(self.num_procs)))
+                
+                self.clearLines()
+                
+                if self.current_proc_num+1 <= self.num_procs-1:
+                    self.current_proc_num += 1
+                    self.pool_handler(self.proc_pool)
+                
+        except queue.Empty:
+            logging.info("queue.Empty encountered!")
+            return
+    
     def exit_on_q(self, key):
         if key in ('q', 'Q'):
             raise urwid.ExitMainLoop()
 
+    def clearLines(self):
+        self.pipelines = []
+    
+    def byte2str(self, data):
+        try:
+            text = codecs.decode(data, "UTF-8")
+        except(TypeError):
+            text = data
+        return text
+    
+    def addText2TextWidget(self, widget, updateText):
+        widget.set_text(str(widget.text) + "\n" + self.byte2str(updateText))
+
     def saveLines(self, data):
         self.pipelines.append(data)
     
-    def addText2TextWidget(self, widget, updateText):
-        try:
-            widget.set_text(str(widget.text) + "\n" + codecs.decode(updateText, "UTF-8"))
-        except(TypeError):
-            widget.set_text(str(widget.text) + "\n" + updateText)
-
     def update_text(self, read_data):
-        self.addText2TextWidget(self.right_text_box, read_data)
-        self.saveLines(read_data)
-
-    def execute(self, cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
-        process = subprocess.Popen(shlex.split(cmd, posix=False), shell=False, stdout=stdout_subproc, stderr=stderr_subproc)
-        while process.poll() is None:
-            # self.main_window().sizing()
-            size = self.loopie.screen.get_cols_rows()
-            self.loopie.screen.draw_screen(size, self.main_frame.render(size))
+        self.saveLines(self.byte2str(read_data))
         
-        # output = process.communicate()[0]
-        # self.loopie.draw_screen()
-        # output = process.communicate(timeout=1.0)[0]
-        # while True:
-        #     if process.poll() is not None:
-        #         break
-        exitCode = process.returncode
-        
-        if (exitCode == 0):
-            return
-            # return lines
+        if type(read_data) == bytes:
+            if '|' in read_data.decode():
+                lines = read_data.decode().split('\n')
+                for l in lines:
+                    if l.split('|')[0] != '':
+                        self.addText2TextWidget(self.right_text_box, l.split('|')[0])
+                        self.addText2TextWidget(self.right_text_box, '--')
+            else:
+                self.addText2TextWidget(self.right_text_box, read_data)
+    
+    def csv_outputter(self, lines, search_type, query, year):
+        filetemplate = '%s_%s-%s.csv'
+        if search_type == 1:
+            with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
+                f.writelines(lines)
         else:
-            raise subprocess.CalledProcessError(exitCode, cmd)
+            with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
+                f.writelines(lines)
+    
+    def pool_handler(self, proc_pool):
+        logging.info("Process number #%s currently running..." % (self.current_proc_num+1))
+        proc = proc_pool[self.current_proc_num][0]
+        proc.start()
+        self.check_process(self.loopie, proc)
+    
+    def progger(self, proc):
+        if proc.is_alive():
+            self.loopie.set_alarm_in(
+                sec=0.5,
+                callback=self.progger
+            )
+        else:
+            self.update_text("Process is stopped")
+            
+    
+    def execute(self, cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
+        
+        process = subprocess.Popen(shlex.split(cmd, posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
+        process.communicate()
         
     def automator(self, years=[], queries=[], stdout_external=subprocess.PIPE, stderr_external=subprocess.STDOUT):
+        
+        proc_pool = []
         
         if years == [] or queries == []:
             print("Input years and queries!")
             sys.exit(1)
         
-        
-        present_files = os.listdir()
         automator_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
-        filetemplate = '%s_%s-%s.csv'
-        check_template = '%s_%s-%s.csv'
         
         while len(queries) != 0:
             query = queries.pop()
@@ -155,30 +234,20 @@ class GraphView(urwid.WidgetWrap):
                 commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s"'
                     
             for year in years:
-                # if (check_template % (query[1], year[0], year[1])) in present_files:
-                #     print(filetemplate % (query[1], year[0], year[1]), " already exists! continuing...")
-                #     continue
                 if search_type == 1:
                     command = commandtemplate % (year[0], year[1], query[0], query[1])
                 else:
                     command = commandtemplate % (year[0], year[1], query[0])
-                # print(command)
                 
-                # lines = execute(command)
-                # pdb.set_trace()
-                lines = self.execute(command, stdout_subproc=stdout_external, stderr_subproc=stderr_external)
+                proc = multiprocessing.Process(
+                    target=self.execute,
+                    args=[command, stdout_external, stderr_external],
+                    name=command
+                )
                 
-                # self.update_text(str(self.pipelines))
+                proc_pool.append([proc, search_type, query, year])
                 
-                # if search_type == 1:
-                #     with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
-                #         f.writelines(lines)
-                # else:
-                #     with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
-                #         f.writelines(lines)
-
-
-                # time.sleep(random.randint(1, 3))
+        return proc_pool
     
     def call_the_automator(self):
         self.years = []
@@ -195,11 +264,19 @@ class GraphView(urwid.WidgetWrap):
             query_text = [t.strip() for t in query_text]
             self.queries.append(query_text)
         
-        # self.update_text(str(self.queries))
+        proc_pool = self.automator(years=self.years, queries=self.queries, stdout_external=self.stdout, stderr_external=self.stderr)
+        self.num_procs = len(proc_pool)
         
-        # pipe = automator.main(years=self.years, stdout_external=self.stdout, stderr_external=self.stderr)
-        pipe = self.automator(years=self.years, queries=self.queries, stdout_external=self.stdout, stderr_external=self.stderr)
-
+        self.update_text("There are %s processes waiting..." % self.num_procs)
+        
+        self.proc_pool = proc_pool
+        self.pool_handler(proc_pool)
+        # self.update_text(proc_pool[0].get())
+        
+        # for i in proc_pool:
+        #     self.update_text(str(i))
+        
+        
     def on_animate_button(self, button):
         """Toggle started state and button text."""
         if self.started: # stop animation
@@ -275,8 +352,8 @@ class GraphView(urwid.WidgetWrap):
 
         mid = urwid.Columns([('weight', 1, left_side), ('weight', 2, middle_box), ('weight', 3, self.right_side)])
 
-        pg_bar = urwid.ProgressBar('progress_start', 'progress_end')
-        bottom = urwid.LineBox(urwid.Filler(pg_bar))
+        self.pg_bar = urwid.ProgressBar('progress_start', 'progress_end')
+        bottom = urwid.LineBox(urwid.Filler(self.pg_bar))
 
 
         simple_walk = urwid.SimpleFocusListWalker([('weight', 2, top), ('weight', 5, mid), ('weight', 1, bottom)])
@@ -297,9 +374,6 @@ class GraphController:
         self.view = GraphView( self )
 
     def main(self):
-        # self.aloop = asyncio.get_event_loop()
-        # ev_loop = urwid.AsyncioEventLoop(loop=self.aloop)
-        # self.loop = urwid.MainLoop(self.view, self.view.palette, unhandled_input=self.view.exit_on_q, event_loop=ev_loop)
         screen = urwid.raw_display.Screen()
         self.loop = urwid.MainLoop(self.view, self.view.palette, unhandled_input=self.view.exit_on_q, screen=screen)
         stdout = self.loop.watch_pipe(self.view.update_text)

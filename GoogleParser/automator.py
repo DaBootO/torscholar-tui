@@ -25,7 +25,7 @@ def execute(cmd):
     if (exitCode == 0):
         return lines
     else:
-        raise subprocess.CalledProcessError(command, exitCode, output)
+        raise subprocess.CalledProcessError(exitCode, command, output)
 
 present_files = os.listdir()
 

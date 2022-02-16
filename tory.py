@@ -30,8 +30,9 @@ RESEARCH_HEADER_ASCII = """ _____            _____                              
 """
 
 HOW_TO_USE = """How to use:
-#1 wähle die gewünschten Zeiträume aus (Enter)
-#2 gebe die Queries ein (für Format siehe Readme)
+#1 wähle die gewünschten Zeiträume aus (Enter oder Mouseclick)
+#2 gebe die Queries ein
+e.g. 'welding process, welding_process'
 #3 starte den automatisierten Parser"""
 
 connected_to_tor = torchecker.torCheck()
@@ -50,13 +51,14 @@ years = [[1946, 1950],
          [2001, 2005],
          [2006, 2010],
          [2011, 2015],
-         [2016, 2020]]
+         [2016, 2020],
+         [2021, 2022]]
 
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)-4s %(processName)s %(message)s", 
     datefmt="%H:%M:%S",
-    filename='trace.log',
+    filename='tory.log',
 )
 
 def update_time(stop_event, msg_queue):
@@ -131,7 +133,6 @@ class GraphView(urwid.WidgetWrap):
                 )
                 
                 self.pg_bar.current = ((self.current_proc_num+1) * (self.pg_bar.done / float(self.num_procs)))
-                logging.info((self.current_proc_num+1) * (self.pg_bar.done / float(self.num_procs)))
                 
                 self.clearLines()
                 
@@ -271,12 +272,7 @@ class GraphView(urwid.WidgetWrap):
         
         self.proc_pool = proc_pool
         self.pool_handler(proc_pool)
-        # self.update_text(proc_pool[0].get())
-        
-        # for i in proc_pool:
-        #     self.update_text(str(i))
-        
-        
+    
     def on_animate_button(self, button):
         """Toggle started state and button text."""
         if self.started: # stop animation
@@ -292,11 +288,11 @@ class GraphView(urwid.WidgetWrap):
                 button.set_label("Stop")
                 self.started = True
                 pipe = self.call_the_automator()
-
+    
     def checkbox(self, lbl):
         w = urwid.CheckBox(lbl)
         return w
-
+    
     def progress_bar(self, smooth=False):
         if smooth:
             return urwid.ProgressBar('pg normal', 'pg complete',
@@ -304,10 +300,10 @@ class GraphView(urwid.WidgetWrap):
         else:
             return urwid.ProgressBar('pg normal', 'pg complete',
                 0, 1)
-
+    
     def exit_program(self, w):
         raise urwid.ExitMainLoop()
-
+    
     def main_window(self):
         footer = urwid.AttrMap(urwid.Text(u'Press [q] / [Q] to exit...', align='center'), 'footer')
         if self.connected_to_tor:

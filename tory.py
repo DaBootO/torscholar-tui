@@ -237,7 +237,7 @@ class GraphView(urwid.WidgetWrap):
         multiprocessing.Process(
             target=self.csv2escel_execute,
             args=[self.stdout, self.stderr],
-            name=command
+            name="csv2excel"
         ).start()
         
     def csv2escel_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):

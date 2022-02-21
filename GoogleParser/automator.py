@@ -49,24 +49,26 @@ years = [[1946, 1950],
 
 with open('query_templates/query_parts_finished.dat', 'r') as f:
     lines = f.readlines()
-    
-lines = [line.strip() for line in lines]
-lines = [line.split(' ,') for line in lines]
+
+
+q = [line.split(',') for line in lines]
+
+qry = []
+for querylist in q:
+    tmp = []
+    for query in querylist:
+        tmp.append(query.strip())
+    qry.append(tmp)
 
 queries = []
-for line in lines:
-    if len(line) == 1:
-        filename = line[0].replace(' ', '_')
-        queries.append([line[0], filename])
-    elif len(line) == 2:
-        filename1 = line[0].replace(' ', '_')
-        filename2 = line[1].replace(' ', '_')
-        filename = filename1+'_'+filename2
-        queries.append([line[0], line[1], filename])
-
-# queries = [
-#     ["choice of", "welding process", "choice_of_welding_process"]
-# ]
+for q in qry:
+    if '' in q:
+        filename = ''.join(q)
+        q.append(filename.replace(' ', '_'))
+    else:
+        filename = '_'.join(q)
+        q.append(filename.replace(' ', '_'))
+    queries.append(q)
 
 ###################################
 # select search type              #
@@ -92,38 +94,62 @@ check_template = '%s_%s-%s.csv'
 
 while len(queries) != 0:
     query = queries.pop()
+    commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s'
+    
+    if len(query) != 3:
+        print("ERROR with format! Input has to be 'PHRASE,WORDS' in template file!")
+        print("The query you gave was:")
+        print(query)
+        continue
+    
+    if  query[0] != '':
+        phrase = ' -p "' +  query[0] + '"'
+    else:
+        phrase = ''
+    if query[1] != '':
+        words = ' -A "' + query[1] + '"'
+    else:
+        words = ''
+    
     if not isinstance(query, list):
         query = [q.strip() for q in query.split('"') if q !='']
-    if "choice of" in query or "selOFORFOR" in query:
-        search_type = 1
-        if not isinstance(query, list):
-            query.append((query[0]+' '+query[1]).replace(' ', '_'))
-        ## SEL OF OR FOR
-        commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s" -A "%s"'
-    else:
-        search_type = 2
-        if not isinstance(query, list):
-            query.append((query[0]).replace(' ', '_'))
-        ### REST
-        commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s"'
+    # if "choice of" in query or "selOFORFOR" in query:
+    #     search_type = 1
+    #     if not isinstance(query, list):
+    #         query.append((query[0]+' '+query[1]).replace(' ', '_'))
+    #     ## SEL OF OR FOR
+    #     commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s" -A "%s"'
+    # else:
+    #     search_type = 2
+    #     if not isinstance(query, list):
+    #         query.append((query[0]).replace(' ', '_'))
+    #     ### REST
+    #     commandtemplate = 'python3 -u torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s"'
     
+        
+    cmd = commandtemplate + phrase + words
+
     for year in years:
         # if (check_template % (query[1], year[0], year[1])) in present_files:
         #     print(filetemplate % (query[1], year[0], year[1]), " already exists! continuing...")
         #     continue
-        if search_type == 1:
-            command = commandtemplate % (year[0], year[1], query[0], query[1])
-        else:
-            command = commandtemplate % (year[0], year[1], query[0])
-        print(command)
-
+        command = cmd % (year[0], year[1])
+        # if search_type == 1:
+        #     command = commandtemplate % (year[0], year[1], query[0], query[1])
+        # else:
+        #     command = commandtemplate % (year[0], year[1], query[0])
+        # print(command)
+        # print(filetemplate % (query[2], year[0], year[1]))
         lines = execute(command)
-        if search_type == 1:
-            with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
-                f.writelines(lines)
-        else:
-            with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
-                f.writelines(lines)
+        with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
+            f.writelines(lines)
+        
+        # if search_type == 1:
+            # with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
+            #     f.writelines(lines)
+        # else:
+        #     with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
+        #         f.writelines(lines)
 
 
-        time.sleep(random.randint(1, 3))
+        # time.sleep(random.randint(1, 3))

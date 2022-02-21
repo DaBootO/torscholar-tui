@@ -1,7 +1,6 @@
 # internal imports
 from sys import stderr, stdout
 from src.torchecking import torchecker
-from src.parser import automator
 
 
 # external imports
@@ -68,6 +67,27 @@ def update_time(stop_event, msg_queue):
         msg_queue.put( time.strftime('time %X') )
     logging.info('stop')
 
+# class BoxButton(urwid.WidgetWrap):
+#     """ Taken from https://stackoverflow.com/a/65871001/778272
+#     """
+#     def __init__(self, label, on_click):
+#         self.label_widget = urwid.SelectableIcon("[ " + str(label) + " ]")
+#         self.widget = urwid.Padding(self.label_widget)
+#         self.hidden_button = urwid.Button('hidden button', on_click)
+#         super(BoxButton, self).__init__(self.widget)
+
+#     def selectable(self):
+#         return True
+
+#     def keypress(self, *args, **kwargs):
+#         return self.hidden_button.keypress(*args, **kwargs)
+
+#     def mouse_event(self, *args, **kwargs):
+#         return self.hidden_button.mouse_event(*args, **kwargs)
+    
+#     def set_label(self, label):
+#         return self.label_widget.set_text("[ " + str(label) + " ]")
+
 class GraphView(urwid.WidgetWrap):
     """
     A class responsible for providing the application's interface and
@@ -77,8 +97,8 @@ class GraphView(urwid.WidgetWrap):
     palette = [
         ('normal_text', 'white', 'dark blue'),
         ('normal_bold_text', 'white', 'dark red', 'bold'),
-        ('button normal','light gray', 'dark blue', 'standout'),
-        ('button select','white', 'dark green'),
+        ('button_normal','light gray', 'light blue', 'standout'),
+        ('button_select','white', 'light green', 'bold'),
         ('footer', 'white', 'dark red'),
         ('banner', 'black', 'light gray'),
         ('streak', 'black', 'dark red'),
@@ -123,13 +143,18 @@ class GraphView(urwid.WidgetWrap):
                 return
             else:
                 logging.info("Process #%s exited with exitcode %s" % (self.current_proc_num+1, self.proc_pool[self.current_proc_num][0].exitcode))
-                logging.info("Process #%s is of searchtype %s" % (self.current_proc_num+1, self.proc_pool[self.current_proc_num][1]))
+                # logging.info("Process #%s is of searchtype %s" % (self.current_proc_num+1, self.proc_pool[self.current_proc_num][1]))
 
+                # self.csv_outputter(
+                #     self.pipelines,
+                #     self.proc_pool[self.current_proc_num][1],
+                #     self.proc_pool[self.current_proc_num][2],
+                #     self.proc_pool[self.current_proc_num][3]
+                # )
                 self.csv_outputter(
                     self.pipelines,
                     self.proc_pool[self.current_proc_num][1],
-                    self.proc_pool[self.current_proc_num][2],
-                    self.proc_pool[self.current_proc_num][3]
+                    self.proc_pool[self.current_proc_num][2]
                 )
                 
                 self.pg_bar.current = ((self.current_proc_num+1) * (self.pg_bar.done / float(self.num_procs)))
@@ -166,7 +191,6 @@ class GraphView(urwid.WidgetWrap):
     
     def update_text(self, read_data):
         self.saveLines(self.byte2str(read_data))
-        
         if type(read_data) == bytes:
             if '|' in read_data.decode():
                 lines = read_data.decode().split('\n')
@@ -176,15 +200,19 @@ class GraphView(urwid.WidgetWrap):
                         self.addText2TextWidget(self.right_text_box, '--')
             else:
                 self.addText2TextWidget(self.right_text_box, read_data)
-    
-    def csv_outputter(self, lines, search_type, query, year):
-        filetemplate = '%s_%s-%s.csv'
-        if search_type == 1:
-            with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
-                f.writelines(lines)
         else:
-            with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
-                f.writelines(lines)
+            self.addText2TextWidget(self.right_text_box, read_data)
+    
+    def csv_outputter(self, lines, query, year):
+        filetemplate = '%s_%s-%s.csv'
+        with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
+            f.writelines(lines)
+        # if search_type == 1:
+        #     with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
+        #         f.writelines(lines)
+        # else:
+        #     with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
+        #         f.writelines(lines)
     
     def pool_handler(self, proc_pool):
         logging.info("Process number #%s currently running..." % (self.current_proc_num+1))
@@ -201,6 +229,19 @@ class GraphView(urwid.WidgetWrap):
         else:
             self.update_text("Process is stopped")
             
+    
+    def csv2excel_action(self, button):
+        # self.csv2escel_execute(self.stdout, self.stderr)
+        multiprocessing.Process(
+            target=self.csv2escel_execute,
+            args=[self.stdout, self.stderr],
+            name=command
+        ).start()
+        
+    def csv2escel_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
+        this_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+        process = subprocess.Popen(shlex.split(this_dir + "src/dataManip/csv2excel.sh", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
+        process.communicate()
     
     def execute(self, cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
         
@@ -219,26 +260,50 @@ class GraphView(urwid.WidgetWrap):
         
         while len(queries) != 0:
             query = queries.pop()
+            # if not isinstance(query, list):
+            #     query = [q.strip() for q in query.split('"') if q !='']
+            
+            commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s'
+    
+            if len(query) != 3:
+                print("ERROR with format! Input has to be 'PHRASE,WORDS' in template file!")
+                print("The query you gave was:")
+                print(query)
+                continue
+            
+            if  query[0] != '':
+                phrase = ' -p "' +  query[0] + '"'
+            else:
+                phrase = ''
+            if query[1] != '':
+                words = ' -A "' + query[1] + '"'
+            else:
+                words = ''
+            
             if not isinstance(query, list):
                 query = [q.strip() for q in query.split('"') if q !='']
-            if "choice of" in query or "selOFORFOR" in query:
-                search_type = 1
-                if not isinstance(query, list):
-                    query.append((query[0]+' '+query[1]).replace(' ', '_'))
-                ## SEL OF OR FOR
-                commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s" -A "%s"'
-            else:
-                search_type = 2
-                if not isinstance(query, list):
-                    query.append((query[0]).replace(' ', '_'))
-                ### REST
-                commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s"'
-                    
+            
+            # if "choice of" in query or "selOFORFOR" in query:
+            #     search_type = 1
+            #     if not isinstance(query, list):
+            #         query.append((query[0]+' '+query[1]).replace(' ', '_'))
+            #     ## SEL OF OR FOR
+            #     commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s" -A "%s"'
+            # else:
+            #     search_type = 2
+            #     if not isinstance(query, list):
+            #         query.append((query[0]).replace(' ', '_'))
+            #     ### REST
+            #     commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s -p "%s"'
+            cmd = commandtemplate + phrase + words
+            
             for year in years:
-                if search_type == 1:
-                    command = commandtemplate % (year[0], year[1], query[0], query[1])
-                else:
-                    command = commandtemplate % (year[0], year[1], query[0])
+                # if search_type == 1:
+                #     command = commandtemplate % (year[0], year[1], query[0], query[1])
+                # else:
+                #     command = commandtemplate % (year[0], year[1], query[0])
+                
+                command = cmd % (year[0], year[1])
                 
                 proc = multiprocessing.Process(
                     target=self.execute,
@@ -246,7 +311,8 @@ class GraphView(urwid.WidgetWrap):
                     name=command
                 )
                 
-                proc_pool.append([proc, search_type, query, year])
+                # proc_pool.append([proc, search_type, query, year])
+                proc_pool.append([proc, query, year])
                 
         return proc_pool
     
@@ -260,10 +326,28 @@ class GraphView(urwid.WidgetWrap):
         query_all_text = self.query_box.text
         query_lines = query_all_text.split('\n')
         
-        for l in query_lines:
-            query_text = l.split(',')
-            query_text = [t.strip() for t in query_text]
-            self.queries.append(query_text)
+        # for l in query_lines:
+        #     query_text = l.split(',')
+        #     query_text = [t.strip() for t in query_text]
+        #     self.queries.append(query_text)
+        
+        q = [line.split(',') for line in query_lines]
+
+        qry = []
+        for querylist in q:
+            tmp = []
+            for query in querylist:
+                tmp.append(query.strip())
+            qry.append(tmp)
+
+        for q in qry:
+            if '' in q:
+                filename = ''.join(q)
+                q.append(filename.replace(' ', '_'))
+            else:
+                filename = '_'.join(q)
+                q.append(filename.replace(' ', '_'))
+            self.queries.append(q)
         
         proc_pool = self.automator(years=self.years, queries=self.queries, stdout_external=self.stdout, stderr_external=self.stderr)
         self.num_procs = len(proc_pool)
@@ -275,15 +359,19 @@ class GraphView(urwid.WidgetWrap):
     
     def on_animate_button(self, button):
         """Toggle started state and button text."""
+        
         if self.started: # stop animation
             # self.update_text(str(self.pipelines))
             button.set_label("Start")
             self.started = False
-        else:
+        else: # start animation
             if not self.connected_to_tor:
+                logging.info("NOT CONNECTED TO TOR!")
                 self.started = False
+                self.update_text("YOU ARE NOT CONNECTED TO TOR!")
                 self.update_text("Connect to tor first!")
                 self.update_text("run 'sudo service tor start'")
+                return
             else:
                 button.set_label("Stop")
                 self.started = True
@@ -340,10 +428,15 @@ class GraphView(urwid.WidgetWrap):
         
         self.right_txt = urwid.Text(('banner', u'Outputfeld Subprozesse'), align='center')
         self.right_text_box = urwid.Text(u'')
-        self.butty = urwid.Button(u"Start", on_press=self.on_animate_button)
+        self.butty = urwid.Button(u"Start", self.on_animate_button)
         self.on_animate_button(self.butty)
+        self.butty_attr = urwid.AttrMap(self.butty, "button_normal", focus_map="button_select")
+        self.butty_csv2excel = urwid.Button(u"csv2excel", on_press=self.csv2excel_action)
+        self.butty_csv2excel_attr = urwid.AttrMap(self.butty_csv2excel, "button_normal", focus_map="button_select")
+        self.mid_pad = urwid.Text("")
+        self.button_column = urwid.Columns([('weight', 2, self.butty_attr), ('weight', 1, self.mid_pad), ('weight', 2, self.butty_csv2excel_attr)])
         self.butty_padding = urwid.Padding(self.butty, align='center')
-        self.right_walker = urwid.SimpleFocusListWalker([self.butty_padding, self.right_txt, self.right_text_box])
+        self.right_walker = urwid.SimpleFocusListWalker([self.button_column, self.right_txt, self.right_text_box])
         self.right_side = urwid.LineBox(urwid.ListBox(self.right_walker))
 
         mid = urwid.Columns([('weight', 1, left_side), ('weight', 2, middle_box), ('weight', 3, self.right_side)])
@@ -358,7 +451,7 @@ class GraphView(urwid.WidgetWrap):
         self.main_frame = urwid.Frame(pile)
         self.main_frame.set_footer(footer)
         self.main_frame.set_header(header)
-
+        
         return self.main_frame
         
 class GraphController:

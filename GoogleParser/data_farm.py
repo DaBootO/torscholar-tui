@@ -46,6 +46,19 @@ ws = wb.active
 datapoints = len(data)
 
 row_index = 1
+col_index = 1
+ws.cell(row=row_index, column=col_index).value = "article title"
+col_index += 1
+ws.cell(row=row_index, column=col_index).value = "yearlow"
+col_index += 1
+ws.cell(row=row_index, column=col_index).value = "yearhigh"
+col_index += 1
+ws.cell(row=row_index, column=col_index).value = "positives"
+col_index += 1
+ws.cell(row=row_index, column=col_index).value = "negatives"
+col_index += 1
+ws.cell(row=row_index, column=col_index).value = ("from - to")
+row_index += 1
 
 for dp in data:
     col_index = 1

@@ -26,4 +26,19 @@ Using this software is pretty easy:
 2. Start the `automator.py` script
 3. After the script finished just start `csv2excel.sh` and export the files from `./excel/finished` to your local machine.
 4. Manually identify fitting `"1"` or non-fitting `"0"` articles
-5. Push the marked excel-files back to the Linux-machine into the `/data` directory and start `data_farm.py`. The output can be taken from `/data/output` 
+5. Push the marked excel-files back to the Linux-machine into the `/data` directory and start `data_farm.py`. The output can be taken from `/data/output`
+
+## torscholar
+---
+If you are interested in every argument for the torscholar script just invoke the help messages by supplying the `-h` flag.
+
+The most important arguments for the `torscholar` script are:
+
+- `-t`\
+ This will make the scraper only look in the titles of the articles ("allintitle: XXX")
+
+- `-A` => `-A "material selection"`\
+The words inside the quotation marks will be searched for in the articles.
+
+- `-p` => `-p "material selection"`\
+The words inside the quotation marks will be searched for in the articles as phrases. This means they need to be spelled and in exctly this order.

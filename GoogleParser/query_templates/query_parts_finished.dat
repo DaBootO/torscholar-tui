@@ -1,35 +1,66 @@
+choice of ,material
+choice of ,materials
+,material selection
+,materials selection
+selOFORFOR ,material
+selOFORFOR ,materials
+,selection of material
+,selection of materials
+Auswahl von ,Materialien
+Auswahl von ,Werkstoffen
+Auswahl des ,Materials
+Auswahl des ,Werkstoffes
+Auswahl des ,Werkstoffs
+Materialauswahl
+Werkstoffauswahl
+choice of ,manufacturing process
+choice of ,production process
+,process selection
+selOFORFOR ,manufacturing process
+selOFORFOR ,production process
+Auswahl von ,Fertigungstechnologien
+Auswahl von ,Fertigungstechniken
+Auswahl von ,Fertigungsverfahren
+Auswahl von ,Fertigungsprozessen
+Auswahl von ,Produktionstechnologien
+Auswahl von ,Produktionstechniken
+Auswahl von ,Produktionsverfahren
+Auswahl von ,Produktionsprozessen
+Auswahl der ,Fertigungstechnologien
+Auswahl der ,Fertigungstechniken
+Auswahl des ,Fertigungsverfahren
+Auswahl des ,Fertigungsverfahrens
+Auswahl des ,Fertigungsprozess
+Auswahl des ,Fertigungsprozesses
+Auswahl der ,Produktionstechnologie
+Auswahl der ,Produktionstechniken
+Auswahl des ,Produktionsverfahren
+Auswahl des ,Produktionsverfahrens
+Auswahl des ,Produktionsprozess
+Auswahl des ,Produktionsprozesses
 choice of ,joining method
 choice of ,joining process
-choice of ,welding process
-choice of ,welding technology
+choice of ,joining technology
+,joining selection
+,joining method selection
+,joining process selection
+,joining technology selection
 selOFORFOR ,joining method
 selOFORFOR ,joining process
 selOFORFOR ,joining technology
+choice of ,welding process
+choice of ,welding technology
+,welding process selection
+,welding technology selection
 selOFORFOR ,welding process
 selOFORFOR ,welding technology
-choice of ,material
-choice of ,materials
-selOFORFOR ,material
-selOFORFOR ,materials
-selection of ,material
-selection of ,materials
-choice of ,manufacturing process
-choice of ,production process
-selOFORFOR ,manufacturing process
-selOFORFOR ,production process
-Auswahl von Fügetechnologien
-Auswahl von Fügeverfahren
-joining method selection
-joining process selection
-joining selection
-joining technology selection
-welding process selection
-Auswahl des Materials
-Auswahl von Materialien
-Materialauswahl
-Werkstoffauswahl
-material selection
-materials selection
-process selection
-,test2
-test3,
+Auswahl von ,Fügetechnologien
+Auswahl von ,Fügetechniken
+Auswahl von ,Fügeverfahren
+Auswahl von ,Fügeprozessen
+Auswahl de* ,Fügetechnologie*
+Auswahl de* ,Fügetechnologie*
+Auswahl de* ,Fügeverfahren*
+Auswahl de* ,Fügeprozess*
+Auswahl von ,Schweißprozessen
+Auswahl de* ,Schweißprozess*

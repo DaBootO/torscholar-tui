@@ -31,7 +31,8 @@ RESEARCH_HEADER_ASCII = """ _____            _____                              
 HOW_TO_USE = """How to use:
 #1 wähle die gewünschten Zeiträume aus (Enter oder Mouseclick)
 #2 gebe die Queries ein
-e.g. 'welding process, welding_process'
+'phrase, words' -> "phrase" words
+', words' -> words
 #3 starte den automatisierten Parser"""
 
 connected_to_tor = torchecker.torCheck()
@@ -205,6 +206,7 @@ class GraphView(urwid.WidgetWrap):
     
     def csv_outputter(self, lines, query, year):
         filetemplate = '%s_%s-%s.csv'
+        logging.info("Outputting to .CSV as %s" % (filetemplate % (query[2], year[0], year[1])))
         with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
             f.writelines(lines)
         # if search_type == 1:
@@ -331,6 +333,12 @@ class GraphView(urwid.WidgetWrap):
         #     query_text = [t.strip() for t in query_text]
         #     self.queries.append(query_text)
         
+        for test in query_lines:
+            if ',' not in test:
+                self.update_text("ERROR in query: %s" % test)
+                self.update_text("There needs to be a comma to seperate PHRASE from WORDS!")
+                return
+        
         q = [line.split(',') for line in query_lines]
 
         qry = []
@@ -366,7 +374,6 @@ class GraphView(urwid.WidgetWrap):
             self.started = False
         else: # start animation
             if not self.connected_to_tor:
-                logging.info("NOT CONNECTED TO TOR!")
                 self.started = False
                 self.update_text("YOU ARE NOT CONNECTED TO TOR!")
                 self.update_text("Connect to tor first!")

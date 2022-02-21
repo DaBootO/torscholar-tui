@@ -86,22 +86,31 @@ To Do:\
 
 ## queries
 ---
-There are two different query types:
-- >`selOFORFOR, welding process, selOFORFOR_welding_process`
+You have to insert the wanted queries in the center column in `tory.py`
 
-**AND**
+The queries need to be separated by a newline-character.
 
-- >`welding process, welding_process`
+A query consists of 2 parts:
+>`PHRASE,WORDS`
 
-The first one uses the torscholar -p option for the `selOFORFOR` phrase. This means that the parser will search for titles which include **exactly** `"selection of" or "selection for"` in the search query. This also works for the query of `"choice of"` if the first string is `choice of`.\
-The second one also uses the -p option to look for articles which include **exactly** `"welding process"` in their title.
+The `phrase` will be enclosed in quotation marks on google scholar. This means that exactly this combination of letters and words need to be in the title of the article. You **DO NOT NEED** to enclose the phrase part of the query in quotation marks!
 
-You have to insert the queries you want to parse exactly in this format into the *queries box* in the `tory.py` TUI and separate them with a new-line:
+The `words` will not be enclosed in quotation marks. This means that the words can be arranged in any order in the title and even some simple permutations (e.g. `project` in the phrase will also find articles with the word `projects` in the title).
 
-> `selOFORFOR/choice of, $words$, $filename$`
+There needs to be a `","` in the query! This seperates the `phrase` part from the `words` part.
 
-OR
+The filename base will be the concatenation of the parts of the query.
+>`choice of, material selection -> choice_of_material_selection`
 
-> `$words$, $filename$`
+## examples:
 
-`$filename$` should be the concatenation of the elements of the string list with underscores as the spacing between words (this way it is easier to further analyse the datasets). The years etc. will automatically be appended to the filename.
+- `choice of, process`\
+you will be looking for `"choice of" process` in Google Scholar.
+
+- `,material selection`\
+you will be looking for `material selection` (without a phrase!) in Google Scholar
+
+- `welding process,`\
+you will be looking for `"welding process"` (without words!) in Google Scholar
+
+

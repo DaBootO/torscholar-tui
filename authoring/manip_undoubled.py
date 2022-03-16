@@ -1,27 +1,29 @@
 import pickle
 from openpyxl import Workbook
 import string
+import os
 from tqdm import tqdm
 
-
-def save_obj(obj, name):
-    with open('obj/'+ name + '.pkl', 'wb') as f:
+def save_obj(obj, directory ,name):
+    with open(os.path.join(directory, "obj/"+ name + '.pkl'), 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
-def load_obj(name):
-    with open('obj/' + name + '.pkl', 'rb') as f:
+def load_obj(name, directory):
+    print(os.path.join(directory, "obj/"+ name + '.pkl'))
+    with open(os.path.join(directory, "obj/"+ name + '.pkl'), 'rb') as f:
         return pickle.load(f)
 
+directory = os.path.abspath(os.path.realpath(__file__)[:-len(os.path.basename(__file__))]) + '/'
 
 uppercase_letters = list(string.ascii_uppercase)
-Dict = load_obj("AuthorOutputUndoubled")
+Dict = load_obj("AuthorOutputUndoubled", directory)
 output = {}
 
 
 for query in Dict.keys():
     author_dict = {}
-    for author in tqdm(Dict[query].keys()):
+    for author in tqdm(Dict[query].keys(), bar_format='{percentage:3.0f}%'):
         if author in list(author_dict.keys()):
             author_dict[author][0] += Dict[query][author][0]
             author_dict[author][1] += Dict[query][author][1]
@@ -53,5 +55,6 @@ for query in output.keys():
         ws[uppercase_letters[col_num+2] + str(row_num)] = output[query][author][1]
     col_num += 3
 
-wb.save("TEST_UNDOUBLED.xlsx")
+wb.save(os.path.join(directory, "Undoubled_Authors_with_citations.xlsx"))
+print("Excel file written!")
 

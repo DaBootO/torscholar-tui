@@ -5,13 +5,13 @@ import pickle
 from tqdm import trange
 
 
-def save_obj(obj, name):
-    with open('obj/'+ name + '.pkl', 'wb') as f:
+def save_obj(obj, directory ,name):
+    with open(os.path.join(directory, "obj/"+ name + '.pkl'), 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
 
-def load_obj(name):
-    with open('obj/' + name + '.pkl', 'rb') as f:
+def load_obj(name, directory):
+    with open(os.path.join(directory, "obj/"+ name + '.pkl'), 'rb') as f:
         return pickle.load(f)
 
 
@@ -21,7 +21,9 @@ def dim2list(ws):
         dims[i] = int(re.findall('\d+', dims[i])[0])
     return dims
 
-base_directory = "/home/dabooto/PycharmProjects/AuthorData/wo_doubles"
+# base_directory = "/home/dabooto/PycharmProjects/AuthorData/wo_doubles"
+directory = os.path.abspath(os.path.realpath(__file__)[:-len(os.path.basename(__file__))]) + '/'
+base_directory = os.path.join(directory, "wo_doubles")
 
 files = os.listdir(base_directory)
 print(files)
@@ -49,8 +51,8 @@ for f in files:
                 try:
                     citations = int(citations)
                 except Exception:
-                    print(f, row_a)
                     print("something went wrong in the aforementioned sheet")
+                    print(f, row_a)
                     print(type(citations))
             else:
                 citations = 0
@@ -91,4 +93,4 @@ for f in files:
         wb.close()
 
 
-save_obj(DataOut, "AuthorOutputUndoubled")
+save_obj(DataOut, directory, "AuthorOutputUndoubled")

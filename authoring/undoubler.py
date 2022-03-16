@@ -10,9 +10,9 @@ def dim2list(ws):
         dims[i] = int(re.findall('\d+', dims[i])[0])
     return dims
 
-
-base_directory = "/home/dabooto/PycharmProjects/AuthorData/Rohdaten"
-undoubles_directory = "/home/dabooto/PycharmProjects/AuthorData/wo_doubles/"
+directory = directory = os.path.abspath(os.path.realpath(__file__)[:-len(os.path.basename(__file__))]) + '/'
+base_directory = os.path.join(directory, "Rohdaten") + '/'
+undoubles_directory = os.path.join(directory, "wo_doubles") + '/'
 
 sub_dirs = os.listdir(base_directory)
 print(sub_dirs)
@@ -43,7 +43,7 @@ for sd in sub_dirs:
 
         num_file = 1
 
-        for f in tqdm(files):
+        for f in tqdm(files, bar_format='{percentage:3.0f}%'):
             if f[-4:] == 'xlsx':
                 wb = openpyxl.load_workbook(sub_dir_path+'/'+f)
                 ws = wb.active

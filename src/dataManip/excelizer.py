@@ -1,3 +1,4 @@
+from csv import QUOTE_NONE
 import pandas as pd
 import os
 import fileinput
@@ -31,7 +32,7 @@ for file in os.listdir(directory):
                 else:
                     print(line)
 
-            read_file = pd.read_table(directory+str(file), sep="|", names=labels)
+            read_file = pd.read_table(directory+str(file), sep="|", names=labels, quoting=QUOTE_NONE)
             if not os.path.exists(os.path.join(directory, "excel/")):
                 os.mkdir(os.path.join(directory, "excel/"))
             read_file.to_excel(directory+"excel/"+file[:-4]+".xlsx", index = None, header=False)

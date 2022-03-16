@@ -16,7 +16,8 @@ def execute(cmd):
             break
 
         lines.append(nextline.decode())
-        sys.stdout.write(nextline.decode())
+        if nextline.decode() != '':
+            sys.stdout.write(nextline.decode())
         sys.stdout.flush()
 
     output = process.communicate(timeout=0.2)[0]
@@ -43,13 +44,13 @@ years = [[1946, 1950],
          [2001, 2005],
          [2006, 2010],
          [2011, 2015],
-         [2016, 2020]]
+         [2016, 2020],
+         [2021, 2022]]
 
 # years = [[2001, 2005]]
 
 with open('query_templates/query_parts_finished.dat', 'r') as f:
     lines = f.readlines()
-
 
 q = [line.split(',') for line in lines]
 
@@ -152,4 +153,4 @@ while len(queries) != 0:
         #         f.writelines(lines)
 
 
-        # time.sleep(random.randint(1, 3))
+        time.sleep(random.randint(1, 3))

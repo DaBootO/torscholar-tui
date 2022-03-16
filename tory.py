@@ -26,14 +26,15 @@ RESEARCH_HEADER_ASCII = """ _____            _____                              
 |  _  /   / _ \  \___ \   / _ \  / _` | | '__|  / __| | '_ \ 
 | | \ \  |  __/  ____) | |  __/ | (_| | | |    | (__  | | | |
 |_|  \_\  \___| |_____/   \___|  \__,_| |_|     \___| |_| |_|
+© Dario Contrino, Jerome Kaspar
 """
 
-HOW_TO_USE = """How to use:
-#1 wähle die gewünschten Zeiträume aus (Enter oder Mouseclick)
-#2 gebe die Queries ein
-'phrase, words' -> "phrase" words
-', words' -> words
-#3 starte den automatisierten Parser"""
+HOW_TO_USE = """How to Use:
+#1 Wähle die gewünschten Zeiträume aus (Enter oder Mausklick)
+#2 Gebe die Queries ein
+<<'phrase, words'>> -> "phrase" words
+<<', words'>> -> words
+#3 Starte den automatisierten Parser"""
 
 connected_to_tor = torchecker.torCheck()
 
@@ -233,14 +234,38 @@ class GraphView(urwid.WidgetWrap):
             
     
     def csv2excel_action(self, button):
-        # self.csv2escel_execute(self.stdout, self.stderr)
         multiprocessing.Process(
-            target=self.csv2escel_execute,
+            target=self.csv2excel_execute,
             args=[self.stdout, self.stderr],
             name="csv2excel"
         ).start()
         
-    def csv2escel_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
+    def csv2excel_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
+        this_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+        process = subprocess.Popen(shlex.split(this_dir + "src/dataManip/csv2excel.sh", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
+        process.communicate()
+    
+    def comparator_action(self, button):
+        multiprocessing.Process(
+            target=self.comparator_execute,
+            args=[self.stdout, self.stderr],
+            name="comparator"
+        ).start()
+        
+    def comparator_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
+        this_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+        process = subprocess.Popen(shlex.split("python3 "+ this_dir + "src/dataManip/comparator.py", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
+        process.communicate()
+    
+    def authoring_action(self, button):
+        # self.csv2escel_execute(self.stdout, self.stderr)
+        multiprocessing.Process(
+            target=self.authoring_execute,
+            args=[self.stdout, self.stderr],
+            name="authoring"
+        ).start()
+        
+    def authoring_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
         this_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
         process = subprocess.Popen(shlex.split(this_dir + "src/dataManip/csv2excel.sh", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
         process.communicate()
@@ -416,6 +441,7 @@ class GraphView(urwid.WidgetWrap):
         div1 = urwid.Divider()
 
         self.checkboxlist = []
+        self.checkboxlist.append(urwid.CheckBox("gesamt"))
         for year in years:
             text = str(year[0])+'-'+str(year[1])
             self.checkboxlist.append(urwid.CheckBox(text))
@@ -424,7 +450,7 @@ class GraphView(urwid.WidgetWrap):
         checkbox_walker = urwid.SimpleFocusListWalker([left_fill, div1] + self.checkboxlist)
         left_side = urwid.LineBox(urwid.ListBox(checkbox_walker))
 
-        mid_txt = urwid.Text(('banner', u'Queries eingeben'), align='center')
+        mid_txt = urwid.Text(('banner', u'Query Eingabe'), align='center')
         mid_fill = urwid.BoxAdapter(urwid.Filler(mid_txt, valign='top'), height=1)
         div2 = urwid.Divider()
 
@@ -433,26 +459,51 @@ class GraphView(urwid.WidgetWrap):
         middle_walker = urwid.SimpleFocusListWalker([mid_fill, div2, self.query_box])
         middle_box = urwid.LineBox(urwid.ListBox(middle_walker))
         
+        # self.right_txt = urwid.Text(('banner', u'Outputfeld Subprozesse'), align='center')
+        # self.right_text_box = urwid.Text(u'')
+        # self.butty = urwid.Button(u"Start", self.on_animate_button)
+        # self.on_animate_button(self.butty)
+        # self.butty_attr = urwid.AttrMap(self.butty, "button_normal", focus_map="button_select")
+        # self.butty_csv2excel = urwid.Button(u"csv2excel", on_press=self.csv2excel_action)
+        # self.butty_csv2excel_attr = urwid.AttrMap(self.butty_csv2excel, "button_normal", focus_map="button_select")
+        # self.mid_pad = urwid.Text("")
+        # self.button_column = urwid.Columns([('weight', 2, self.butty_attr), ('weight', 1, self.mid_pad), ('weight', 2, self.butty_csv2excel_attr)])
+        # self.butty_padding = urwid.Padding(self.butty, align='center')
+        # self.right_walker = urwid.SimpleFocusListWalker([self.button_column, self.right_txt, self.right_text_box])
+        # self.right_side = urwid.LineBox(urwid.ListBox(self.right_walker))
+        
         self.right_txt = urwid.Text(('banner', u'Outputfeld Subprozesse'), align='center')
         self.right_text_box = urwid.Text(u'')
+        self.right_walker = urwid.SimpleFocusListWalker([self.right_txt, self.right_text_box])
+        self.right_side = urwid.LineBox(urwid.ListBox(self.right_walker))
+
         self.butty = urwid.Button(u"Start", self.on_animate_button)
         self.on_animate_button(self.butty)
         self.butty_attr = urwid.AttrMap(self.butty, "button_normal", focus_map="button_select")
         self.butty_csv2excel = urwid.Button(u"csv2excel", on_press=self.csv2excel_action)
         self.butty_csv2excel_attr = urwid.AttrMap(self.butty_csv2excel, "button_normal", focus_map="button_select")
-        self.mid_pad = urwid.Text("")
-        self.button_column = urwid.Columns([('weight', 2, self.butty_attr), ('weight', 1, self.mid_pad), ('weight', 2, self.butty_csv2excel_attr)])
-        self.butty_padding = urwid.Padding(self.butty, align='center')
-        self.right_walker = urwid.SimpleFocusListWalker([self.button_column, self.right_txt, self.right_text_box])
-        self.right_side = urwid.LineBox(urwid.ListBox(self.right_walker))
-
+        self.butty_comparator = urwid.Button(u"comparator", on_press=self.comparator_action)
+        self.butty_comparator_attr = urwid.AttrMap(self.butty_comparator, "button_normal", focus_map="button_select")
+        self.butty_authoring = urwid.Button(u"authoring", on_press=self.authoring_action)
+        self.butty_authoring_attr = urwid.AttrMap(self.butty_authoring, "button_normal", focus_map="button_select")
+        self.arrow_text = urwid.Text(u'  ➤➤➤  ', align='center')
+        self.button_bar = urwid.LineBox(urwid.Filler(urwid.Columns([('weight', 1, self.butty_attr),
+                                                                    ('weight', 1, self.arrow_text),
+                                                                    ('weight', 1, self.butty_csv2excel_attr),
+                                                                    ('weight', 1, self.arrow_text),
+                                                                    ('weight', 1, self.butty_comparator_attr),
+                                                                    ('weight', 1, self.arrow_text),
+                                                                    ('weight', 1, self.butty_authoring_attr)]),
+                                                    valign='middle'))
         mid = urwid.Columns([('weight', 1, left_side), ('weight', 2, middle_box), ('weight', 3, self.right_side)])
 
         self.pg_bar = urwid.ProgressBar('progress_start', 'progress_end')
         bottom = urwid.LineBox(urwid.Filler(self.pg_bar))
+        
 
 
-        simple_walk = urwid.SimpleFocusListWalker([('weight', 2, top), ('weight', 5, mid), ('weight', 1, bottom)])
+        # simple_walk = urwid.SimpleFocusListWalker([('weight', 2, top), ('weight', 5, mid), ('weight', 1, bottom)])
+        simple_walk = urwid.SimpleFocusListWalker([('weight', 2, top), ('weight', 6, mid), ('weight', 1, self.button_bar), ('weight', 1, bottom)])
         pile = urwid.Pile(simple_walk)
 
         self.main_frame = urwid.Frame(pile)

@@ -206,16 +206,16 @@ class GraphView(urwid.WidgetWrap):
             self.addText2TextWidget(self.right_text_box, read_data)
     
     def csv_outputter(self, lines, query, year):
-        filetemplate = '%s_%s-%s.csv'
-        logging.info("Outputting to .CSV as %s" % (filetemplate % (query[2], year[0], year[1])))
-        with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
-            f.writelines(lines)
-        # if search_type == 1:
-        #     with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
-        #         f.writelines(lines)
-        # else:
-        #     with open(filetemplate % (query[1], year[0], year[1]), 'w') as f:
-        #         f.writelines(lines)
+        if year != "gesamt":
+            filetemplate = '%s_%s-%s.csv'
+            logging.info("Outputting to .CSV as %s" % (filetemplate % (query[2], year[0], year[1])))
+            with open(filetemplate % (query[2], year[0], year[1]), 'w') as f:
+                f.writelines(lines)
+        else:
+            filetemplate = '%s_gesamt.csv'
+            logging.info("Outputting to .CSV as %s" % (filetemplate % (query[2])))
+            with open(filetemplate % (query[2]), 'w') as f:
+                f.writelines(lines)
     
     def pool_handler(self, proc_pool):
         logging.info("Process number #%s currently running..." % (self.current_proc_num+1))
@@ -267,7 +267,7 @@ class GraphView(urwid.WidgetWrap):
         
     def authoring_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
         this_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
-        process = subprocess.Popen(shlex.split(this_dir + "src/dataManip/csv2excel.sh", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
+        process = subprocess.Popen(shlex.split(this_dir + "src/dataManip/authoring.sh", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
         process.communicate()
     
     def execute(self, cmd, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
@@ -290,7 +290,8 @@ class GraphView(urwid.WidgetWrap):
             # if not isinstance(query, list):
             #     query = [q.strip() for q in query.split('"') if q !='']
             
-            commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents --after=%s --before=%s'
+            commandtemplate = 'python3 -u ' + automator_dir + 'src/parser/torscholar.py -t --csv-header --no-patents '
+            year_arg = '--after=%s --before=%s'
     
             if len(query) != 3:
                 print("ERROR with format! Input has to be 'PHRASE,WORDS' in template file!")
@@ -330,7 +331,10 @@ class GraphView(urwid.WidgetWrap):
                 # else:
                 #     command = commandtemplate % (year[0], year[1], query[0])
                 
-                command = cmd % (year[0], year[1])
+                if year != "gesamt":
+                    command = (cmd + year_arg) % (year[0], year[1])
+                else:
+                    command = cmd
                 
                 proc = multiprocessing.Process(
                     target=self.execute,
@@ -346,6 +350,9 @@ class GraphView(urwid.WidgetWrap):
     def call_the_automator(self):
         self.years = []
         for cb in self.yearlist:
+            if cb.label == "gesamt" and cb.state == True:
+                self.years = ["gesamt"]
+                break
             if cb.state == True:
                 self.years.append(cb.get_label().split('-'))
         
@@ -385,7 +392,7 @@ class GraphView(urwid.WidgetWrap):
         proc_pool = self.automator(years=self.years, queries=self.queries, stdout_external=self.stdout, stderr_external=self.stderr)
         self.num_procs = len(proc_pool)
         
-        self.update_text("There are %s processes waiting..." % self.num_procs)
+        self.update_text("There are %s process(es) waiting..." % self.num_procs)
         
         self.proc_pool = proc_pool
         self.pool_handler(proc_pool)

@@ -10,7 +10,6 @@ def save_obj(obj, directory ,name):
 
 
 def load_obj(name, directory):
-    print(os.path.join(directory, "obj/"+ name + '.pkl'))
     with open(os.path.join(directory, "obj/"+ name + '.pkl'), 'rb') as f:
         return pickle.load(f)
 

@@ -26,16 +26,16 @@ directory = os.path.abspath(os.path.realpath(__file__)[:-len(os.path.basename(__
 base_directory = os.path.join(directory, "wo_doubles")
 
 files = os.listdir(base_directory)
-print(files)
 
 file_number = 0
 DataOut = {}
 
 for f in files:
-    DataOut[f[:-5]] = {}
     authors = {}
 
     if f[-4:] == 'xlsx':
+        DataOut[f[:-5]] = {}
+        print("parsing %s..." % f)
         wb = openpyxl.load_workbook(base_directory+'/'+f)
         ws = wb.active
         dims = dim2list(ws)

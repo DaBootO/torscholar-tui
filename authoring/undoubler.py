@@ -69,11 +69,6 @@ for sd in sub_dirs:
                     row_ud += 1
 
         wb_ud.save(undoubles_directory+str(sd)+".xlsx")
-        wb_doubles_out.save(undoubles_directory+"doubled_output.xlsx")
-
-
-
-
-
-
-
+        if not os.path.exists(os.path.join(undoubles_directory, "doubled_output")):
+            os.mkdir(os.path.join(undoubles_directory, "doubled_output"))
+        wb_doubles_out.save(os.path.join(undoubles_directory, "doubled_output", "doubled_output.xlsx"))

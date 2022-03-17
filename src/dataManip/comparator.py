@@ -101,6 +101,23 @@ for dir in title_dict.keys():
                 out_ws = out_excel.active
                 
                 row = 1
+                labels = [
+                "title",
+                "author",
+                "url",
+                "year",
+                "num_citations",
+                "num_versions",
+                "cluster_id",
+                "url_pdf",
+                "url_citations",
+                "url_versions",
+                "url_citation",
+                "excerpt"]
+
+                for lbl in range(len(labels)):
+                    out_ws[letters[lbl+2]+str(row)] = labels[lbl]
+                row += 1
                 for i in outputs:
                     for j in range(items):
                         out_ws[letters[j]+str(row)] = i[j]

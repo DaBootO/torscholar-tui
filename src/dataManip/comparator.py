@@ -4,6 +4,7 @@ import os
 import string
 import re
 from rich import print as rprint
+import shutil
 
 def dim2list(ws):
     dims = ws.dimensions.split(':')
@@ -94,6 +95,12 @@ for dir in title_dict.keys():
                         title_diffs.append(title)
             else:
                 print("%s exists in %s but not in %s" % (file, dir, dir_check))
+                if not os.path.isdir(os.path.join(directory, "unique")):
+                    os.mkdir(os.path.join(directory, "unique"))
+                file_src = os.path.join(directory_data, dir, file)
+                file_out = os.path.join(directory, "unique", file)
+                shutil.copy(file_src, file_out)
+                continue
             if len(title_diffs) > 0:
                 print("There are %i differences in titles for %s in %s and %s" % (len(title_diffs), file, dir, dir_check))
                 
@@ -127,79 +134,10 @@ for dir in title_dict.keys():
                 if not os.path.isdir(os.path.join(directory, "diffs")):
                     os.mkdir(os.path.join(directory, "diffs"))
                 out_excel.save(os.path.join(os.path.join(directory, "diffs", "DIFFS"+file)))
-
-'''
-for file in os.listdir(directory_data):
-    # print(file)
-    positives = 0
-    negatives = 0
-
-    if file.split('.')[-1] == "xlsx":
-        wb = openpyxl.load_workbook(filename=directory_data + str(file))
-        ws = wb.active
-
-        for cell in ws['A']:
-            # print(cell.value)
-            if cell.value == 1:
-                positives += 1
-            elif cell.value == 0:
-                negatives += 1
-
-        for cell in ws['B']:
-            # print(cell.value)
-            if cell.value == "doppelt":
-                positives -= 1
-
-        name = '_'.join(file.split('.')[0].split('_')[:-1])
-        yearlow, yearhigh = file.split('.')[0].split('_')[-1].split('-')
-
-        print("There are", positives, "in", name, "from", yearlow, "to", yearhigh, "and", negatives, "negatives")
-
-        data.append([name, yearlow, yearhigh, positives, negatives])
-
-wb = openpyxl.Workbook()
-ws = wb.active
-
-datapoints = len(data)
-
-row_index = 1
-col_index = 1
-ws.cell(row=row_index, column=col_index).value = "article title"
-col_index += 1
-ws.cell(row=row_index, column=col_index).value = "yearlow"
-col_index += 1
-ws.cell(row=row_index, column=col_index).value = "yearhigh"
-col_index += 1
-ws.cell(row=row_index, column=col_index).value = "positives"
-col_index += 1
-ws.cell(row=row_index, column=col_index).value = "negatives"
-col_index += 1
-ws.cell(row=row_index, column=col_index).value = ("from - to")
-row_index += 1
-
-for dp in data:
-    col_index = 1
-
-    name = dp[0]
-    yearlow = dp[1]
-    yearhigh = dp[2]
-    positives = dp[3]
-    negatives = dp[4]
-
-    ws.cell(row=row_index, column=col_index).value = name
-    col_index += 1
-    ws.cell(row=row_index, column=col_index).value = yearlow
-    col_index += 1
-    ws.cell(row=row_index, column=col_index).value = yearhigh
-    col_index += 1
-    ws.cell(row=row_index, column=col_index).value = positives
-    col_index += 1
-    ws.cell(row=row_index, column=col_index).value = negatives
-    col_index += 1
-    ws.cell(row=row_index, column=col_index).value = yearlow+'-'+yearhigh
-    row_index += 1
-if not os.path.exists(saveto):
-    os.mkdir(saveto)
-wb.save(saveto+"data_output"+ time.strftime("%d%m%y_%H%M%S") +".xlsx")
-
-'''
+            else:
+                print("There are no differences in titles for %s in %s and %s" % (file, dir, dir_check))
+                if not os.path.isdir(os.path.join(directory, "similar")):
+                    os.mkdir(os.path.join(directory, "similar"))
+                file_src = os.path.join(directory_data, dir, file)
+                file_out = os.path.join(directory, "similar", file)
+                shutil.copy(file_src, file_out)

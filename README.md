@@ -7,6 +7,7 @@
     |  _  /   / _ \  \___ \   / _ \  / _` | | '__|  / __| | '_ \ 
     | | \ \  |  __/  ____) | |  __/ | (_| | | |    | (__  | | | |
     |_|  \_\  \___| |_____/   \___|  \__,_| |_|     \___| |_| |_|
+    © Dario Contrino, Jerome Kaspar
 
 *if you are already running a linux system you can skip this step*
 # How to install Ubuntu on Windows
@@ -112,5 +113,30 @@ you will be looking for `material selection` (without a phrase!) in Google Schol
 
 - `welding process,`\
 you will be looking for `"welding process"` (without words!) in Google Scholar
+---
+---
+# How to Use Tory
 
+![main window](resources/main_window.png)
 
+## Step 1
+
+Select the years you would like to parse. If you need to change the ranges you can easily change them inside `tory.py`.
+
+If you would like to parse the whole GS Database without filtering by years just select "gesamt" and the parser will ommit the `--before` and `--after` arguments.
+
+## Step 2
+Insert your queries. For the Format of the queries look at the [queries chapter.](#queries)
+
+## Step 3
+Start the parser with the "Start" button. You can traverse the window with your mouse or even klick on checkboxes and buttons.
+
+## Step 4
+There are other helper scripts to further analyze your data.
+
+- `csv2excel` takes the **.csv* files in the main directory and converts them to *.xlsx* files.\
+They will show up in `./excel/finished`. As it was crucial to improve the user interfacing for these files they will have 2 columns appended to their left. `0/1` is for coding the files (whether they fit in a certain dataset) and `comment` can contain the flag "doppelt" which will be used by other scripts to discard these articles.
+- `comparator` will compare two datasets.\
+You need to put two datasets in the `./comparison/db1` and `./comparison/db2` directories. The `comparator` will look for dissimilarities in the datasets and outputs the differences in the `./diffs` directory with the suffix "*DIFFS*"
+- `authoring` starts a subprocess to analyze the authors and the number of their citations. This can be used to generate Data on different fields and the researchers impact.\
+The raw data has to be put into the `./authoring/Rohdaten` directory. There you can define your needed fields of research. E.g.: We looked at the fields of "*JOINING*", "*MATERIALS*", "*PROCESS*". The output will be generated in the `./authoring` directory as an *.xlsx* file and grouped by the fields you defined. You can also define just one field.

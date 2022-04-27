@@ -903,6 +903,9 @@ class SearchScholarQuery(ScholarQuery):
 
     def set_phrase(self, phrase):
         """Sets phrase that must be found in the result exactly."""
+        if "selOFORFOR" in phrase:
+            phrase = '"selection of" OR "selection for"'
+            print("HEYLLOLKO")
         self.phrase = self._parenthesize_phrases(phrase)
         eprint("Phrases:\n"+self.phrase)
 

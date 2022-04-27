@@ -69,7 +69,7 @@ To Do:\
 ### python modules
 We will be using `pip3` to install all needed modules for python. Just install the `python-pip3` package via
 
->`sudo apt-get install python-pip3`
+>`sudo apt-get install python3-pip`
 
 and run the following command to install all needed python modules:
 

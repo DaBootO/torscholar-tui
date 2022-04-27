@@ -906,6 +906,8 @@ class SearchScholarQuery(ScholarQuery):
 
     def set_phrase(self, phrase):
         """Sets phrase that must be found in the result exactly."""
+        if "selOFORFOR" in phrase:
+            phrase = '"selection of" OR "selection for"'
         self.phrase = self._parenthesize_phrases(phrase)
         print("DAS IST PHRASE!")
         print(self.phrase)
@@ -1631,6 +1633,9 @@ scholar.py -c 5 -a "albert einstein" -t --none "quantum theory" --after 1970"""
             resb1 = len(querier.articles)
             print("We are at revolution ", revolutions_in_same_result_pit)
             if len(querier.articles) > 0.97*num_of_results and revolutions_in_same_result_pit >= 20:
+                stopprocess = True
+                break
+            if revolutions_in_same_result_pit >= 30:
                 stopprocess = True
                 break
 

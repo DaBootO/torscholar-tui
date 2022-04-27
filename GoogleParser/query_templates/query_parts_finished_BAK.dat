@@ -1,135 +1,135 @@
-choice of ,material
-choice of ,materials
+choice of,material
+choice of,materials
 material selection,
 materials selection,
-selOFORFOR ,material
-selOFORFOR ,materials
+selOFORFOR,material
+selOFORFOR,materials
 selection of material,
 selection of materials,
-Auswahl von ,Materialien
-Auswahl von ,Werkstoffen
-Auswahl des ,Material
-Auswahl des ,Materials
-Auswahl des ,Werkstoffes
-Auswahl des ,Werkstoffs
-Wahl von ,Materialien
-Wahl von ,Werkstoffen
-Wahl des ,Material
-Wahl des ,Materials
-Wahl des ,Werkstoffes
-Wahl des ,Werkstoffs
+Auswahl von,Materialien
+Auswahl von,Werkstoffen
+Auswahl des,Material
+Auswahl des,Materials
+Auswahl des,Werkstoffes
+Auswahl des,Werkstoffs
+Wahl von,Materialien
+Wahl von,Werkstoffen
+Wahl des,Material
+Wahl des,Materials
+Wahl des,Werkstoffes
+Wahl des,Werkstoffs
 Materialauswahl,
 Werkstoffauswahl,
-choice of ,manufacturing process
-choice of ,manufacturing processes
-choice of ,production process
-choice of ,production processes
+choice of,manufacturing process
+choice of,manufacturing processes
+choice of,production process
+choice of,production processes
 process selection,
 manufacturing process selection,
 production process selection,
-selOFORFOR ,manufacturing process
-selOFORFOR ,manufacturing processes
-selOFORFOR ,production process
-selOFORFOR ,production processes
-Auswahl von ,Fertigungstechnologien
-Auswahl von ,Fertigungstechniken
-Auswahl von ,Fertigungsverfahren
-Auswahl von ,Fertigungsprozessen
-Auswahl von ,Produktionstechnologien
-Auswahl von ,Produktionstechniken
-Auswahl von ,Produktionsverfahren
-Auswahl von ,Produktionsprozessen
-Auswahl der ,Fertigungstechnologien
-Auswahl der ,Fertigungstechniken
-Auswahl des ,Fertigungsverfahren
-Auswahl des ,Fertigungsverfahrens
-Auswahl des ,Fertigungsprozess
-Auswahl des ,Fertigungsprozesses
-Auswahl der ,Produktionstechnologie
-Auswahl der ,Produktionstechniken
-Auswahl des ,Produktionsverfahren
-Auswahl des ,Produktionsverfahrens
-Auswahl des ,Produktionsprozess
-Auswahl des ,Produktionsprozesses
-Wahl von ,Fertigungstechnologien
-Wahl von ,Fertigungstechniken
-Wahl von ,Fertigungsverfahren
-Wahl von ,Fertigungsprozessen
-Wahl von ,Produktionstechnologien
-Wahl von ,Produktionstechniken
-Wahl von ,Produktionsverfahren
-Wahl von ,Produktionsprozessen
-Wahl der ,Fertigungstechnologien
-Wahl der ,Fertigungstechniken
-Wahl des ,Fertigungsverfahren
-Wahl des ,Fertigungsverfahrens
-Wahl des ,Fertigungsprozess
-Wahl des ,Fertigungsprozesses
-Wahl der ,Produktionstechnologie
-Wahl der ,Produktionstechniken
-Wahl des ,Produktionsverfahren
-Wahl des ,Produktionsverfahrens
-Wahl des ,Produktionsprozess
-Wahl des ,Produktionsprozesses
-choice of ,joining method
-choice of ,joining methods
-choice of ,joining process
-choice of ,joining processes
-choice of ,joining technology
-choice of ,joining technologies
+selOFORFOR,manufacturing process
+selOFORFOR,manufacturing processes
+selOFORFOR,production process
+selOFORFOR,production processes
+Auswahl von,Fertigungstechnologien
+Auswahl von,Fertigungstechniken
+Auswahl von,Fertigungsverfahren
+Auswahl von,Fertigungsprozessen
+Auswahl von,Produktionstechnologien
+Auswahl von,Produktionstechniken
+Auswahl von,Produktionsverfahren
+Auswahl von,Produktionsprozessen
+Auswahl der,Fertigungstechnologien
+Auswahl der,Fertigungstechniken
+Auswahl des,Fertigungsverfahren
+Auswahl des,Fertigungsverfahrens
+Auswahl des,Fertigungsprozess
+Auswahl des,Fertigungsprozesses
+Auswahl der,Produktionstechnologie
+Auswahl der,Produktionstechniken
+Auswahl des,Produktionsverfahren
+Auswahl des,Produktionsverfahrens
+Auswahl des,Produktionsprozess
+Auswahl des,Produktionsprozesses
+Wahl von,Fertigungstechnologien
+Wahl von,Fertigungstechniken
+Wahl von,Fertigungsverfahren
+Wahl von,Fertigungsprozessen
+Wahl von,Produktionstechnologien
+Wahl von,Produktionstechniken
+Wahl von,Produktionsverfahren
+Wahl von,Produktionsprozessen
+Wahl der,Fertigungstechnologien
+Wahl der,Fertigungstechniken
+Wahl des,Fertigungsverfahren
+Wahl des,Fertigungsverfahrens
+Wahl des,Fertigungsprozess
+Wahl des,Fertigungsprozesses
+Wahl der,Produktionstechnologie
+Wahl der,Produktionstechniken
+Wahl des,Produktionsverfahren
+Wahl des,Produktionsverfahrens
+Wahl des,Produktionsprozess
+Wahl des,Produktionsprozesses
+choice of,joining method
+choice of,joining methods
+choice of,joining process
+choice of,joining processes
+choice of,joining technology
+choice of,joining technologies
 joining selection,
 joining method selection,
 joining process selection,
 joining technology selection,
-selOFORFOR ,joining method
-selOFORFOR ,joining methods
-selOFORFOR ,joining process
-selOFORFOR ,joining processes
-selOFORFOR ,joining technology
-selOFORFOR ,joining technologies
-choice of ,welding process
-choice of ,welding processes
-choice of ,welding technology
-choice of ,welding technologies
+selOFORFOR,joining method
+selOFORFOR,joining methods
+selOFORFOR,joining process
+selOFORFOR,joining processes
+selOFORFOR,joining technology
+selOFORFOR,joining technologies
+choice of,welding process
+choice of,welding processes
+choice of,welding technology
+choice of,welding technologies
 welding process selection,
 welding technology selection,
-selOFORFOR ,welding process
-selOFORFOR ,welding processes
-selOFORFOR ,welding technology
-selOFORFOR ,welding technologies
-Auswahl von ,Fügetechnologien
-Auswahl von ,Fügetechniken
-Auswahl von ,Fügeverfahren
-Auswahl von ,Fügeprozessen
-Auswahl der ,Fügetechnologie
-Auswahl der ,Fügetechnologien
-Auswahl der ,Fügetechnik
-Auswahl der ,Fügetechniken
-Auswahl des ,Fügeverfahren
-Auswahl des ,Fügeverfahrens
-Auswahl der ,Fügeverfahren
-Auswahl des ,Fügeprozess
-Auswahl des ,Fügeprozesses
-Auswahl der ,Fügeprozesse
-Auswahl von ,Schweißprozessen
-Auswahl des ,Schweißprozess
-Auswahl des ,Schweißprozesses
-Auswahl der ,Schweißprozesse
-Wahl von ,Fügetechnologien
-Wahl von ,Fügetechniken
-Wahl von ,Fügeverfahren
-Wahl von ,Fügeprozessen
-Wahl der ,Fügetechnologie
-Wahl der ,Fügetechnologien
-Wahl der ,Fügetechnik
-Wahl der ,Fügetechniken
-Wahl des ,Fügeverfahren
-Wahl des ,Fügeverfahrens
-Wahl der ,Fügeverfahren
-Wahl des ,Fügeprozess
-Wahl des ,Fügeprozesses
-Wahl der ,Fügeprozesse
-Wahl von ,Schweißprozessen
-Wahl des ,Schweißprozess
-Wahl des ,Schweißprozesses
-Wahl der ,Schweißprozesse
+selOFORFOR,welding process
+selOFORFOR,welding processes
+selOFORFOR,welding technology
+selOFORFOR,welding technologies
+Auswahl von,Fügetechnologien
+Auswahl von,Fügetechniken
+Auswahl von,Fügeverfahren
+Auswahl von,Fügeprozessen
+Auswahl der,Fügetechnologie
+Auswahl der,Fügetechnologien
+Auswahl der,Fügetechnik
+Auswahl der,Fügetechniken
+Auswahl des,Fügeverfahren
+Auswahl des,Fügeverfahrens
+Auswahl der,Fügeverfahren
+Auswahl des,Fügeprozess
+Auswahl des,Fügeprozesses
+Auswahl der,Fügeprozesse
+Auswahl von,Schweißprozessen
+Auswahl des,Schweißprozess
+Auswahl des,Schweißprozesses
+Auswahl der,Schweißprozesse
+Wahl von,Fügetechnologien
+Wahl von,Fügetechniken
+Wahl von,Fügeverfahren
+Wahl von,Fügeprozessen
+Wahl der,Fügetechnologie
+Wahl der,Fügetechnologien
+Wahl der,Fügetechnik
+Wahl der,Fügetechniken
+Wahl des,Fügeverfahren
+Wahl des,Fügeverfahrens
+Wahl der,Fügeverfahren
+Wahl des,Fügeprozess
+Wahl des,Fügeprozesses
+Wahl der,Fügeprozesse
+Wahl von,Schweißprozessen
+Wahl des,Schweißprozess
+Wahl des,Schweißprozesses
+Wahl der,Schweißprozesse

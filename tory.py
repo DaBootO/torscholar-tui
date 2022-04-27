@@ -299,6 +299,15 @@ class GraphView(urwid.WidgetWrap):
                 print(query)
                 continue
             
+            # if  query[0] != '':
+            #     if query[0] == "selOFORFOR":
+            #         phrasepart = "'selection of' OR 'selection for'"
+            #     else:
+            #         phrasepart = query[0]
+            #     phrase = ' -p "' +  phrasepart + '"'
+            #     # phrase = " -p '" +  phrasepart + "'"
+            # else:
+            #     phrase = ''
             if  query[0] != '':
                 phrase = ' -p "' +  query[0] + '"'
             else:

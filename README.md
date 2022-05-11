@@ -20,6 +20,71 @@ We will have to install the WSL (*Windows Subsystem for Linux*) to use a Linux s
 3. Restart your computer
 4. Open `Ubuntu` via your launcher and now you have to setup your account to use it further
 
+# basic Linux command
+This might be your first time using linux. Don't worry! It is easier than you think. Here I will show you the basics on the following topics:
+
+1. traversing directories
+2. starting and stopping scripts
+3. opening, changing and deleting files
+
+## traversing directories
+When you open the Ubuntu terminal you will be greeted by a simple `~` symbol. This is your home directory.
+
+### --> **_ls_**
+
+You can list all the files and directories with the `ls` (from `l`i`s`t) command. You can distinguish between files and directories by their different colors. It might be different for your system which colors are used but you will get the hang of it.
+
+### --> **_cd_**
+
+If you want to go into a directory you will use the `cd` (from `c`hange `d`irectory) command. If the directory is in your current directory simply append the directory name to the `cd` command: `'cd test-directory'`. You might try to press `TAB` after some characters and the shell tries to autocomplete the name of the file or directory name.
+
+You can also change to directories which are 'farther away' by simply giving the `cd` command the full path: `'cd /home/user/test-directory'`.
+
+[This webpage from The Linux Foundation](https://www.linux.com/training-tutorials/linux-filesystem-explained/) is a great resource to learn more about the Linux filesystem and why there are so many folders in the `/` directory and what they are used for.
+
+Tip: If you just type `cd` without any path you will change directory to your home directory.
+
+### --> **_explorer.exe ._**
+
+You are also able to traverse your linux system with the windows explorer. This is the beauty and simplicity of WSL. The dot `'.'` is your _current_ directory. So if it is easier for you to work with the windows explorer you are free to do so.
+
+It is also a good idea to have a quick link to your Ubuntu home directory ready. When you are in the home directory use the `'explorer.exe .'` (mind the `dot`) command to open the windows explorer in the current (home) directory.
+
+## starting and stopping scripts
+
+I will give you the basics of starting Python scripts.
+
+### --> __*python3 $SCRIPT*__
+We are using Python with a version >3.0. Therefore we need the `python3` command. If you want you can change the default behaviour of the `python` command to open `python3`.
+
+Simply append the scriptname to the command and press Enter.
+
+Tip: Most scripts (not only Python scripts!) accept arguments (e.g. `python3 torscholar.py -A "test" -s "input"` --> -A and -s are the arguments in this case) and often have a help menu with `-h` or `--help`. These arguments are given to the script and are appended to the back.
+
+### --> __*CTRL+C*__
+If you want to stop a script which is running you have to press `CTRL+C`. This will send a SIGINT (`SIG`nal `INT`errupt) to the process and close it.
+
+## opening, changing and deleting files
+In this small chapter I will show you how easy it is to use WSL to incorporate the tools you might already be using (e.g. notepad) to edit files.
+
+### --> __*notepad.exe $FILENAME*__
+As in `explorer.exe` we can use windows tools like the notepad to open and edit files from WSL. Just type the `notepad.exe $FILENAME` command and the notepad app will open with your file. There you can edit lines, save it or save as a new file.
+
+### --> __*vim*__ && __*nano*__
+There is also the possibility to stay in the terminal and change contents of a text file with `vim` or `nano`. It might take you a while to get used to them (especially vim) but it is worth it! If you are changing files frequently it will save you time to make your modifications, additions and deletions in a file directly in the termina as you do not have to wait for notepad to open.
+
+If you want to learn more about `vim` there is a very nice [interactive vim tutorial](https://www.openvim.com) over at the openvim website.
+
+There is also a [basic tutorial](https://staffwww.fullcoll.edu/sedwards/nano/introtonano.html) for the `nano` editor. I personally prefer vim as it is much more adaptable to your needs (even addons for scripting LSDYNA input files exist) but for a quick line change nano is always an option.
+
+### --> __*rm $FILENAME*__
+To delete a file - you may have needed some notes but now they are clogging your directory - you will use the `rm` (from `r`e`m`ove) command.
+
+Just append the  filename to the `rm` command and the file will be deleted: `rm test.dat`
+
+If you want to delete a whole directory you ahve to use the `-r` argument (`-r` from `r`ecursively deleting a directory): `rm -r test-directory`.
+You can get more infos about the `rm` command with the `-h` argument (remember the _starting and stopping scripts_ chapter?).
+
 # Software prerequisites
 ## mandatory software
 ---
@@ -139,4 +204,20 @@ They will show up in `./excel/finished`. As it was crucial to improve the user i
 - `comparator` will compare two datasets.\
 You need to put two datasets in the `./comparison/db1` and `./comparison/db2` directories. The `comparator` will look for dissimilarities in the datasets and outputs the differences in the `./diffs` directory with the suffix "*DIFFS*". Unique files will be put into `./unique` and similar files (in db1 and db2 and similar to each other) will be put into `./similar`
 - `authoring` starts a subprocess to analyze the authors and the number of their citations. This can be used to generate Data on different fields and the researchers impact.\
-The raw data has to be put into the `./authoring/Rohdaten` directory. There you can define your needed fields of research. E.g.: We looked at the fields of "*JOINING*", "*MATERIALS*", "*PROCESS*". The output will be generated in the `./authoring` directory as an *.xlsx* file and grouped by the fields you defined. You can also define just one field.
+The raw data has to be put into the `./authoring/Rohdaten` directory. There you can define your needed fields of research. E.g.: We looked at the fields of "*JOINING*", "*MATERIALS*", "*PROCESS*" --> you will have to create 3 directories with their respective name and put the corresponding files into the directory. The output will be generated in the `./authoring` directory as an *.xlsx* file and grouped by the fields you defined. You can also define just one field.
+
+# How to compare and merge two datasets
+
+If you parsed a set of queries at two different times you might want to compare and even merge those two datasets. This can be done via the `comparator.py` and `merger.py` tools in the `./src/dataManip` directory.
+
+## comparator.py
+You can either invoke the script via the tory TUI or directly with `python3 ./src/dataManip/comparator.py`.
+
+You need to put two datasets in the `./comparison/db1` and `./comparison/db2` directories. The `comparator` will look for dissimilarities in the datasets and outputs the differences in the `./diffs` directory with the suffix "*DIFFS*". Unique files will be put into `./unique` and similar files (in db1 and db2 and similar to each other) will be put into `./similar`. If there are any non-coded rows a file with the suffix "NOT_CODED" will be created.
+
+You will have to manually code the files and merge them with their respective file: NOT_CODED_xxx_1900-1999.xlsx --> xxx_1900-1999.xlsx
+
+## merger.py
+This script will merge all the files from the directories `./unique`, `./similiar` and `./diffs` into the `./merged` directory. It will also automatically filter out duplicates in a single file.
+
+You can start the script via the `python3 ./src/dataManip/merger.py` command. A simplified output will be printed to stdout but more extensive information will be written to a `merger.log` file in the root directory.

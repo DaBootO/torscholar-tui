@@ -5,12 +5,14 @@ import string
 import re
 from rich import print as rprint
 import shutil
+import logging
 
 def dim2list(ws):
     dims = ws.dimensions.split(':')
     for i in range(len(dims)):
         dims[i] = int(re.findall('\d+', dims[i])[0])
     return dims
+
 
 # how many columns there are in the excel files
 items = 12
@@ -24,12 +26,20 @@ similar_data_path = os.path.join(directory, "similar/")
 unique_data_path = os.path.join(directory, "unique/")
 diff_data_path = os.path.join(directory, "diffs/")
 
+# configuring the logger
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)-4s %(processName)s %(message)s", 
+    datefmt="%H:%M:%S",
+    filename=os.path.join(directory, 'merger.log'),
+)
+
 # copying all the unique files to the merged directory
 # no checks needed, as unique files do not need to be compared
 for unique_file in os.listdir(unique_data_path):
     file_src = os.path.join(unique_data_path, unique_file)
     file_out = os.path.join(directory, "merged", unique_file)
-    print("unique file %s is being transfered..." % unique_file)
+    logging.info("unique file %s is being transfered..." % unique_file)
     shutil.copy(file_src, file_out)
 
 # listing files in the similar and diff directories
@@ -48,7 +58,7 @@ for similar_file in similar_data:
     if 'DIFFS'+similar_file not in merge_files: # if similar file exists without its DIFF counterpart -> copy over
         file_src = os.path.join(similar_data_path, similar_file)
         file_out = os.path.join(directory, "merged", similar_file)
-        print("similar file %s is being transfered..." % unique_file)
+        logging.info("similar file %s is being transfered..." % unique_file)
         shutil.copy(file_src, file_out)
 
 print("There are %s files to be merged left!" % len(merge_files))
@@ -82,7 +92,7 @@ for merger in merge_files:
         for i in range(items):
             ws_sim[letters[i]+str(row_sim)].value = ws_diff[letters[i]+str(row_diff + row_diff_copy)].value
         row_sim += 1
-    print("merged file %s is being transfered..." % merger.replace('DIFFS',''))
+    logging.info("merged file %s is being transfered..." % merger.replace('DIFFS',''))
     wb_sim_out = file_out = os.path.join(directory, "merged", merger.replace('DIFFS',''))
     wb_sim.save(wb_sim_out)
 '''

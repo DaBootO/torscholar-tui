@@ -6,6 +6,7 @@ import re
 from rich import print as rprint
 import shutil
 import logging
+import datetime
 
 def dim2list(ws):
     dims = ws.dimensions.split(':')
@@ -116,15 +117,39 @@ for dir in title_dict.keys():
                         outputs.append(full_data[dir][file][title])
                         title_diffs.append(title)
                     else: # title is in both files
-                        # check which one is coded
-                        if full_data[dir][file][title][0] != None:
-                            similar_title = full_data[dir][file][title]
+                        # check if one is coded
+                        if full_data[dir][file][title][0] != None or full_data[dir_check][file][title][0] != None:
+                            # if at least one is coded -> check which one has the latest modification date
+                            dt_dir = datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(directory_data, dir, file)))
+                            dt_dircheck = datetime.datetime.fromtimestamp(os.path.getmtime(os.path.join(directory_data, dir_check, file)))
+                            
+                            # quick checks to find out which title is coded (if both - check if equal)
+                            if full_data[dir][file][title][0] == full_data[dir_check][file][title][0]:
+                                title_code = full_data[dir][file][title][0]
+                            else:
+                                # quick log and check if both are coded but have different codes
+                                if full_data[dir][file][title][0] != None and full_data[dir_check][file][title][0] != None:
+                                    logging.info("There is a difference of code for %s in %s" % (title, file))
+                                    logging.info("%s has code: %s" % (dir, full_data[dir][file][title][0]))
+                                    logging.info("%s has code: %s" % (dir_check, full_data[dir_check][file][title][0]))
+                                if full_data[dir][file][title][0] != None:
+                                    title_code = full_data[dir][file][title][0]
+                                elif full_data[dir_check][file][title][0] != None:
+                                    title_code = full_data[dir_check][file][title][0]
+                            
+                            if dt_dir > dt_dircheck:
+                                full_data[dir][file][title][0] = title_code
+                                similar_title = full_data[dir][file][title]
+                            else:
+                                full_data[dir_check][file][title][0] = title_code
+                                similar_title = full_data[dir_check][file][title]
+                            
                             similar_outputs.append(similar_title)
                             continue
-                        elif full_data[dir_check][file][title][0] != None:
-                            similar_title = full_data[dir_check][file][title]
-                            similar_outputs.append(similar_title)
-                            continue
+                        # elif full_data[dir_check][file][title][0] != None:
+                        #     similar_title = full_data[dir_check][file][title]
+                        #     similar_outputs.append(similar_title)
+                        #     continue
                         else: # if not coded put into special file with SUFFIX NOT_CODED
                             similar_title_not_coded = full_data[dir][file][title]
                             similar_outputs_not_coded.append(similar_title_not_coded)

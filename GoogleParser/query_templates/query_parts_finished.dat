@@ -1,119 +1,100 @@
-choice of,material
-choice of,materials
-material selection,
-materials selection,
-selection of material,
-selection of materials,
-Auswahl von,Materialien
-Auswahl von,Werkstoffen
-Auswahl des,Material
-Auswahl des,Materials
-Auswahl des,Werkstoffes
-Auswahl des,Werkstoffs
-Wahl von,Materialien
-Wahl von,Werkstoffen
-Wahl des,Material
-Wahl des,Materials
-Wahl des,Werkstoffes
-Wahl des,Werkstoffs
-Materialauswahl,
-Werkstoffauswahl,
-choice of,manufacturing process
-choice of,manufacturing processes
-choice of,production process
-choice of,production processes
-process selection,
-manufacturing process selection,
-production process selection,
-Auswahl von,Fertigungstechnologien
-Auswahl von,Fertigungstechniken
-Auswahl von,Fertigungsverfahren
-Auswahl von,Fertigungsprozessen
-Auswahl von,Produktionstechnologien
-Auswahl von,Produktionstechniken
-Auswahl von,Produktionsverfahren
-Auswahl von,Produktionsprozessen
-Auswahl der,Fertigungstechnologien
-Auswahl der,Fertigungstechniken
-Auswahl des,Fertigungsverfahren
-Auswahl des,Fertigungsverfahrens
-Auswahl des,Fertigungsprozess
-Auswahl des,Fertigungsprozesses
-Auswahl der,Produktionstechnologie
-Auswahl der,Produktionstechniken
-Auswahl des,Produktionsverfahren
-Auswahl des,Produktionsverfahrens
-Auswahl des,Produktionsprozess
-Auswahl des,Produktionsprozesses
-Wahl von,Fertigungstechnologien
-Wahl von,Fertigungstechniken
-Wahl von,Fertigungsverfahren
-Wahl von,Fertigungsprozessen
-Wahl von,Produktionstechnologien
-Wahl von,Produktionstechniken
-Wahl von,Produktionsverfahren
-Wahl von,Produktionsprozessen
-Wahl der,Fertigungstechnologien
-Wahl der,Fertigungstechniken
-Wahl des,Fertigungsverfahren
-Wahl des,Fertigungsverfahrens
-Wahl des,Fertigungsprozess
-Wahl des,Fertigungsprozesses
-Wahl der,Produktionstechnologie
-Wahl der,Produktionstechniken
-Wahl des,Produktionsverfahren
-Wahl des,Produktionsverfahrens
-Wahl des,Produktionsprozess
-Wahl des,Produktionsprozesses
-choice of,joining method
-choice of,joining methods
-choice of,joining process
-choice of,joining processes
-choice of,joining technology
-choice of,joining technologies
-joining selection,
-joining method selection,
-joining process selection,
-joining technology selection,
-choice of,welding process
-choice of,welding processes
-choice of,welding technology
-choice of,welding technologies
-welding process selection,
-welding technology selection,
-Auswahl von,Fügetechnologien
-Auswahl von,Fügetechniken
-Auswahl von,Fügeverfahren
-Auswahl von,Fügeprozessen
-Auswahl der,Fügetechnologie
-Auswahl der,Fügetechnologien
-Auswahl der,Fügetechnik
-Auswahl der,Fügetechniken
-Auswahl des,Fügeverfahren
-Auswahl des,Fügeverfahrens
-Auswahl der,Fügeverfahren
-Auswahl des,Fügeprozess
-Auswahl des,Fügeprozesses
-Auswahl der,Fügeprozesse
-Auswahl von,Schweißprozessen
-Auswahl des,Schweißprozess
-Auswahl des,Schweißprozesses
-Auswahl der,Schweißprozesse
-Wahl von,Fügetechnologien
-Wahl von,Fügetechniken
-Wahl von,Fügeverfahren
-Wahl von,Fügeprozessen
-Wahl der,Fügetechnologie
-Wahl der,Fügetechnologien
-Wahl der,Fügetechnik
-Wahl der,Fügetechniken
-Wahl des,Fügeverfahren
-Wahl des,Fügeverfahrens
-Wahl der,Fügeverfahren
-Wahl des,Fügeprozess
-Wahl des,Fügeprozesses
-Wahl der,Fügeprozesse
-Wahl von,Schweißprozessen
-Wahl des,Schweißprozess
-Wahl des,Schweißprozesses
-Wahl der,Schweißprozesse
+assessment of material,
+assessment of materials,
+evaluation of material,
+evaluation of materials,
+Bewertung von,Materialien
+Bewertung von,Werkstoffen
+Bewertung des,Material
+Bewertung des,Materials
+Bewertung des,Werkstoffes
+Bewertung des,Werkstoffs
+manufacturing process assessment,
+production process assessment,
+manufacturing process evaluation,
+production process evaluation,
+assessment of,manufacturing process
+assessment of,manufacturing processes
+assessment of,production process
+assessment of,production processes
+evaluation of,manufacturing process
+evaluation of,manufacturing processes
+evaluation of,production process
+evaluation of,production processes
+Bewertung von,Fertigungstechnologien
+Bewertung von,Fertigungstechniken
+Bewertung von,Fertigungsverfahren
+Bewertung von,Fertigungsprozessen
+Bewertung von,Produktionstechnologien
+Bewertung von,Produktionstechniken
+Bewertung von,Produktionsverfahren
+Bewertung von,Produktionsprozessen
+Bewertung der,Fertigungstechnologien
+Bewertung der,Fertigungstechnologie
+Bewertung der,Fertigungstechniken
+Bewertung der,Fertigungstechnik
+Bewertung der,Fertigungsverfahren
+Bewertung des,Fertigungsverfahren
+Bewertung des,Fertigungsverfahrens
+Bewertung der,Fertigungsprozesse
+Bewertung des,Fertigungsprozess
+Bewertung des,Fertigungsprozesses
+Bewertung der,Produktionstechnologien
+Bewertung der,Produktionstechnologie
+Bewertung der,Produktionstechniken
+Bewertung der,Produktionstechnik
+Bewertung der,Produktionsverfahren
+Bewertung des,Produktionsverfahren
+Bewertung des,Produktionsverfahrens
+Bewertung der,Produktionsprozesse
+Bewertung des,Produktionsprozess
+Bewertung des,Produktionsprozesses
+joining assessment,
+joining evaluation,
+joining method assessment,
+joining process assessment,
+joining technology assessment,
+joining method evaluation,
+joining process evaluation,
+joining technology evaluation,
+assessment of,joining method
+assessment of,joining methods
+assessment of,joining process
+assessment of,joining processes
+assessment of,joining technology
+assessment of,joining technologies
+evaluation of,joining method
+evaluation of,joining methods
+evaluation of,joining process
+evaluation of,joining processes
+evaluation of,joining technology
+evaluation of,joining technologies
+welding process assessment,
+welding technology assessment,
+welding process evaluation,
+welding technology evaluation,
+assessment of,welding process
+assessment of,welding processes
+assessment of,welding technology
+assessment of,welding technologies
+evaluation of,welding process
+evaluation of,welding processes
+evaluation of,welding technology
+evaluation of,welding technologies
+Bewertung von,Fügetechnologien
+Bewertung von,Fügetechniken
+Bewertung von,Fügeverfahren
+Bewertung von,Fügeprozessen
+Bewertung der,Fügetechnologie
+Bewertung der,Fügetechnologien
+Bewertung der,Fügetechnik
+Bewertung der,Fügetechniken
+Bewertung des,Fügeverfahren
+Bewertung des,Fügeverfahrens
+Bewertung der,Fügeverfahren
+Bewertung des,Fügeprozess
+Bewertung des,Fügeprozesses
+Bewertung der,Fügeprozesse
+Bewertung von,Schweißprozessen
+Bewertung des,Schweißprozess
+Bewertung des,Schweißprozesses
+Bewertung der,Schweißprozesse

@@ -94,6 +94,8 @@ check in your commandline via:
 
 Update your package repositories via:
 >`sudo apt-get update`
+and install the updates via:
+>`sudo apt-get upgrade`
 
 If your python version < 3.0 you can install it via:
 >`sudo apt-get install python3`
@@ -181,6 +183,16 @@ you will be looking for `"welding process"` (without words!) in Google Scholar
 ---
 ---
 # How to Use Tory
+
+## Step 0
+
+If you cloned the project and did all the needed work with inputing your hashed tor stem password you will have to enter the `torscholar-tui` directory.
+
+In this directory you will find the `tory.py` file which is the TUI for the Parser and its components like `csv2excel` and `authoring`.
+
+You can start the script via the `python3 tory.py` command!
+
+You should be greeted by an interface similar to this one (it might be, that you have a different color scheme and fonts installed in your terminal):
 
 ![main window](resources/main_window.png)
 

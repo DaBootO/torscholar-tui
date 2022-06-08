@@ -6,6 +6,8 @@ from tqdm import trange
 
 
 def save_obj(obj, directory ,name):
+    if not os.path.exists(os.path.join(directory, "obj/")):
+            os.mkdir(os.path.join(directory, "obj/"))
     with open(os.path.join(directory, "obj/"+ name + '.pkl'), 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 

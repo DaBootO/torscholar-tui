@@ -136,13 +136,13 @@ for dir in title_dict.keys():
                                     title_code = full_data[dir][file][title][0]
                                 elif full_data[dir_check][file][title][0] != None:
                                     title_code = full_data[dir_check][file][title][0]
-                            
-                            if dt_dir > dt_dircheck:
-                                full_data[dir][file][title][0] = title_code
-                                similar_title = full_data[dir][file][title]
-                            else:
-                                full_data[dir_check][file][title][0] = title_code
-                                similar_title = full_data[dir_check][file][title]
+                                
+                                if dt_dir > dt_dircheck:
+                                    full_data[dir][file][title][0] = title_code
+                                    similar_title = full_data[dir][file][title]
+                                else:
+                                    full_data[dir_check][file][title][0] = title_code
+                                    similar_title = full_data[dir_check][file][title]
                             
                             similar_outputs.append(similar_title)
                             continue

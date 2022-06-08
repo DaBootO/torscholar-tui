@@ -140,7 +140,7 @@ We will be using `pip3` to install all needed modules for python. Just install t
 
 and run the following command to install all needed python modules:
 
->`pip3 install stem random_user_agent beautifulsoup4 urwid pandas openpyxl pysocks`
+>`pip3 install stem random_user_agent beautifulsoup4 urwid pandas openpyxl pysocks rich`
 
 Every other module *should* be already installed, if not just install them with `pip3 install $MODULE_NAME$`. You cannot use `pip search *` atm, but you can search on the [PyPI Website](https://pypi.org).
 

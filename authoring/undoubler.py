@@ -68,6 +68,9 @@ for sd in sub_dirs:
                         ws_ud[uppercase_letters[column_copy] + str(row_ud)].value = ws[uppercase_letters[column_copy] + str(row_a)].value
                     row_ud += 1
 
+        if not os.path.exists(os.path.join(undoubles_directory)):
+            os.mkdir(os.path.join(undoubles_directory))
+        
         wb_ud.save(undoubles_directory+str(sd)+".xlsx")
         if not os.path.exists(os.path.join(undoubles_directory, "doubled_output")):
             os.mkdir(os.path.join(undoubles_directory, "doubled_output"))

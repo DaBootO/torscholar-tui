@@ -59,7 +59,8 @@ if os.path.isdir(diff_data_path):
         if diff_file.replace('DIFFS', '') in similar_data: # if DIFFS_XXX and XXX exist -> append to merge list
             merge_files.append(diff_file)
         else:
-            shutil.move(diff_file, diff_file.replace('DIFFS', 'NOT_CODED'))
+            shutil.move(os.path.join(diff_data_path, diff_file),
+                        os.path.join(diff_data_path, diff_file.replace('DIFFS', 'NOT_CODED')))
 if os.path.isdir(similar_data_path):
     for similar_file in similar_data:
         if 'DIFFS'+similar_file not in merge_files: # if similar file exists without its DIFF counterpart -> copy over

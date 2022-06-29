@@ -36,30 +36,37 @@ logging.basicConfig(
 
 # copying all the unique files to the merged directory
 # no checks needed, as unique files do not need to be compared
-for unique_file in os.listdir(unique_data_path):
-    file_src = os.path.join(unique_data_path, unique_file)
-    file_out = os.path.join(directory, "merged", unique_file)
-    logging.info("unique file %s is being transfered..." % unique_file)
-    shutil.copy(file_src, file_out)
+if os.path.isdir(unique_data_path):
+    for unique_file in os.listdir(unique_data_path):
+        file_src = os.path.join(unique_data_path, unique_file)
+        file_out = os.path.join(directory, "merged", unique_file)
+        logging.info("unique file %s is being transfered..." % unique_file)
+        shutil.copy(file_src, file_out)
 
 # listing files in the similar and diff directories
-similar_data = os.listdir(similar_data_path)
-similar_files_dict = {}
-diff_data = os.listdir(diff_data_path)
-diff_files_dict = {}
+if os.path.isdir(similar_data_path):
+    similar_data = os.listdir(similar_data_path)
+    similar_files_dict = {}
+if os.path.isdir(diff_data_path):
+    diff_data = os.listdir(diff_data_path)
+    diff_files_dict = {}
 
 
 merge_files = []
-for diff_file in diff_data:
-    if diff_file.replace('DIFFS', '') in similar_data: # if DIFFS_XXX and XXX exist -> append to merge list
-        merge_files.append(diff_file)
 
-for similar_file in similar_data:
-    if 'DIFFS'+similar_file not in merge_files: # if similar file exists without its DIFF counterpart -> copy over
-        file_src = os.path.join(similar_data_path, similar_file)
-        file_out = os.path.join(directory, "merged", similar_file)
-        logging.info("similar file %s is being transfered..." % unique_file)
-        shutil.copy(file_src, file_out)
+if os.path.isdir(diff_data_path):
+    for diff_file in diff_data:
+        if diff_file.replace('DIFFS', '') in similar_data: # if DIFFS_XXX and XXX exist -> append to merge list
+            merge_files.append(diff_file)
+if os.path.isdir(similar_data_path):
+    for similar_file in similar_data:
+        if 'DIFFS'+similar_file not in merge_files: # if similar file exists without its DIFF counterpart -> copy over
+            file_src = os.path.join(similar_data_path, similar_file)
+            file_out = os.path.join(directory, "merged", similar_file)
+            logging.info("similar file %s is being transfered..." % similar_file)
+            if not os.path.isdir(os.path.join(directory, "merged/")):
+                os.mkdir(os.path.join(directory, "merged/"))
+            shutil.copy(file_src, file_out)
 
 print("There are %s files to be merged left!" % len(merge_files))
 

@@ -233,3 +233,18 @@ You will have to manually code the files and merge them with their respective fi
 This script will merge all the files from the directories `./unique`, `./similiar` and `./diffs` into the `./merged` directory. It will also automatically filter out duplicates in a single file.
 
 You can start the script via the `python3 ./src/dataManip/merger.py` command. A simplified output will be printed to stdout but more extensive information will be written to a `merger.log` file in the root directory.
+
+# How to get the data from the coded excel sheets
+
+The script `./GoogleParser/data_farm.py` will be used to parse all the coded files and output a human-readable table inside another excel file.
+
+Inside the `./GoogleParser/data_farm.py` script you can manually define the year range you would like to evaluate (simply change the list with the name `years`).
+
+Before you start the script you have to put all your coded files into the `./GoogleParser/data` directory. Now you can run the script via `python3 ./GoogleParser/data_farm.py`.
+
+The script will output another excel file in the `./GoogleParser/data/output` directory. Every file will be broken down into two rows:
+
+1. POSITIVES -> If you coded it with a 1
+2. NEGATIVES -> If you coded it with a 0
+
+All titles which have a code AND have the comment "doppelt" will be discarded.

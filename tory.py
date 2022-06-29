@@ -257,6 +257,18 @@ class GraphView(urwid.WidgetWrap):
         process = subprocess.Popen(shlex.split("python3 "+ this_dir + "src/dataManip/comparator.py", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
         process.communicate()
     
+    def merge_action(self, button):
+        multiprocessing.Process(
+            target=self.merge_execute,
+            args=[self.stdout, self.stderr],
+            name="merge"
+        ).start()
+        
+    def merge_execute(self, stdout_subproc=subprocess.PIPE, stderr_subproc=subprocess.STDOUT):
+        this_dir = os.path.realpath(__file__)[:-len(os.path.basename(__file__))]
+        process = subprocess.Popen(shlex.split("python3 "+ this_dir + "src/dataManip/merger.py", posix=False), shell=False, stdout=stdout_subproc, stderr=stdout_subproc)
+        process.communicate()
+    
     def authoring_action(self, button):
         # self.csv2escel_execute(self.stdout, self.stderr)
         multiprocessing.Process(
@@ -487,6 +499,8 @@ class GraphView(urwid.WidgetWrap):
         self.butty_csv2excel_attr = urwid.AttrMap(self.butty_csv2excel, "button_normal", focus_map="button_select")
         self.butty_comparator = urwid.Button(u"comparator", on_press=self.comparator_action)
         self.butty_comparator_attr = urwid.AttrMap(self.butty_comparator, "button_normal", focus_map="button_select")
+        self.butty_merge = urwid.Button(u"merge", on_press=self.merge_action)
+        self.butty_merge_attr = urwid.AttrMap(self.butty_merge, "button_normal", focus_map="button_select")
         self.butty_authoring = urwid.Button(u"authoring", on_press=self.authoring_action)
         self.butty_authoring_attr = urwid.AttrMap(self.butty_authoring, "button_normal", focus_map="button_select")
         self.arrow_text = urwid.Text(u'  ➤➤➤  ', align='center')
@@ -495,6 +509,8 @@ class GraphView(urwid.WidgetWrap):
                                                                     ('weight', 1, self.butty_csv2excel_attr),
                                                                     ('weight', 1, self.arrow_text),
                                                                     ('weight', 1, self.butty_comparator_attr),
+                                                                    ('weight', 1, self.arrow_text),
+                                                                    ('weight', 1, self.butty_merge_attr),
                                                                     ('weight', 1, self.arrow_text),
                                                                     ('weight', 1, self.butty_authoring_attr)]),
                                                     valign='middle'))

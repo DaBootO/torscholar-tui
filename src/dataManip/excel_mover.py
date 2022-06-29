@@ -10,7 +10,13 @@ letters = string.ascii_uppercase
 
 directory = os.path.abspath(os.path.realpath(__file__)[:-len(os.path.basename(__file__))] + "../../") + '/'
 directory_excel = os.path.join(directory, "excel/")
+if not os.path.isdir(directory_excel):
+    os.mkdir(directory_excel)
+
 saveto = os.path.join(directory, "excel/", "finished/")
+if not os.path.isdir(saveto):
+    os.mkdir(saveto)
+
 for file in os.listdir(directory_excel):
     # print(file)
     if file.split('.')[-1] == "xlsx":

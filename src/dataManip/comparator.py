@@ -171,7 +171,7 @@ for dir in title_dict.keys():
                                     else:
                                         full_data[dir_check][file][title][0] = None
                                         similar_title_not_coded = full_data[dir_check][file][title]
-                                    similar_outputs_not_coded.append(similar_title_not_coded)
+                                    title_diffs.append(similar_title_not_coded)
                                 
                         else: # if not coded put into special file with SUFFIX NOT_CODED
                             similar_title_not_coded = full_data[dir][file][title]
@@ -213,7 +213,7 @@ for dir in title_dict.keys():
                 for lbl in range(len(labels)):
                     out_ws[letters[lbl]+str(row)] = labels[lbl]
                 row += 1
-                for i in outputs:
+                for i in title_diffs:
                     for j in range(items):
                         out_ws[letters[j]+str(row)] = i[j]
                     row += 1

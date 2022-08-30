@@ -26,6 +26,9 @@ similar_data_path = os.path.join(directory, "similar/")
 unique_data_path = os.path.join(directory, "unique/")
 diff_data_path = os.path.join(directory, "diffs/")
 
+if not os.path.isdir(os.path.join(directory, "merged")):
+    os.mkdir(os.path.join(directory, "merged"))
+
 # configuring the logger
 logging.basicConfig(
     level=logging.DEBUG,
@@ -221,3 +224,5 @@ for dir in title_dict.keys():
                 file_out = os.path.join(directory, "similar", file)
                 shutil.copy(file_src, file_out)
 '''
+
+print("merging complete!")

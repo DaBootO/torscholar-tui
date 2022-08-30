@@ -54,6 +54,7 @@ for dir in files_dict.keys():
                 file_diffs.append("%s is in %s but not in %s" % (file, dir, dir_check))
 
 if differences != 0:
+    print("There are some files which are not in all directories!")
     logging.info("There are some files which are not in all directories!")
     for diff in file_diffs:
         logging.info(diff)
@@ -106,6 +107,7 @@ for dir in title_dict.keys():
             title_diffs = []
             similar_outputs = []
             similar_outputs_not_coded = []
+            unique_uncoded = []
             doubled_inputs = 0
             if file in title_dict[dir_check].keys(): # if not -> send to unique
                 for title in title_dict[dir][file]:
@@ -116,7 +118,13 @@ for dir in title_dict.keys():
                             doubled_inputs += 1
                             continue
                         outputs.append(full_data[dir][file][title])
-                        title_diffs.append(title)
+                        
+                        # if the title only exists in one file and is not coded -> NOT_CODED
+                        if full_data[dir][file][title][0] == None:
+                            unique_uncoded.append(full_data[dir][file][title])
+                            logging.info("The title %s exists only in %s and is NOT coded!" % (title, file))
+                        else:
+                            title_diffs.append(full_data[dir][file][title])
                     else: # title is in both files
                         if title not in already_parsed_in_both:
                             already_parsed_in_both.append(title)
@@ -144,6 +152,7 @@ for dir in title_dict.keys():
                                 # not equal
                                 # quick log
                                 logging.info("There is a difference of code for %s in %s" % (title, file))
+                                logging.info("code diff for %s in %s" % (title, file))
                                 logging.info("%s has code: %s" % (dir, full_data[dir][file][title][0]))
                                 logging.info("%s has code: %s" % (dir_check, full_data[dir_check][file][title][0]))
                                 
@@ -183,6 +192,8 @@ for dir in title_dict.keys():
                 logging.info("%s exists in %s but not in %s" % (file, dir, dir_check))
                 if not os.path.isdir(os.path.join(directory, "unique")):
                     os.mkdir(os.path.join(directory, "unique"))
+                
+                
                 file_src = os.path.join(directory_data, dir, file)
                 file_out = os.path.join(directory, "unique", file)
                 shutil.copy(file_src, file_out)
@@ -289,6 +300,39 @@ for dir in title_dict.keys():
                 if not os.path.isdir(os.path.join(directory, "similar")):
                     os.mkdir(os.path.join(directory, "similar"))
                 out_excel.save(os.path.join(os.path.join(directory, "similar", "NOT_CODED"+file)))
+            if len(unique_uncoded) > 0:
+                out_excel = openpyxl.Workbook()
+                out_ws = out_excel.active
+                
+                row = 1
+                labels = [
+                "0/1",
+                "comment",
+                "title",
+                "author",
+                "url",
+                "year",
+                "num_citations",
+                "num_versions",
+                "cluster_id",
+                "url_pdf",
+                "url_citations",
+                "url_versions",
+                "url_citation",
+                "excerpt"]
+                
+                for lbl in range(len(labels)):
+                    out_ws[letters[lbl]+str(row)] = labels[lbl]
+                row += 1
+                for i in unique_uncoded:
+                    for j in range(items):
+                        out_ws[letters[j]+str(row)] = i[j]
+                    row += 1
+                out_ws.column_dimensions['C'].width = 100.0
+                out_ws.column_dimensions['D'].width = 100.0
+                if not os.path.isdir(os.path.join(directory, "diffs")):
+                    os.mkdir(os.path.join(directory, "diffs"))
+                out_excel.save(os.path.join(os.path.join(directory, "diffs", "NOT_CODED"+file)))
                 # print("There are no differences in titles for %s in %s and %s" % (file, dir, dir_check))
                 # if not os.path.isdir(os.path.join(directory, "similar")):
                 #     os.mkdir(os.path.join(directory, "similar"))

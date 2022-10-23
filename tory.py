@@ -12,7 +12,7 @@ import os
 import shlex
 import sys
 import logging
-import multiprocessing
+import multiprocess as multiprocessing
 import queue
 
 def button(self, t, fn):

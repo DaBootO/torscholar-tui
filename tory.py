@@ -20,12 +20,19 @@ def button(self, t, fn):
         w = urwid.AttrWrap(w, 'button normal', 'button select')
         return w
 
-RESEARCH_HEADER_ASCII = """ _____            _____                                _     
-|  __ \          / ____|                              | |    
-| |__) |   ___  | (___     ___    __ _   _ __    ___  | |__  
-|  _  /   / _ \  \___ \   / _ \  / _` | | '__|  / __| | '_ \ 
-| | \ \  |  __/  ____) | |  __/ | (_| | | |    | (__  | | | |
-|_|  \_\  \___| |_____/   \___|  \__,_| |_|     \___| |_| |_|
+# RESEARCH_HEADER_ASCII = """ _____            _____                                _     
+# |  __ \          / ____|                              | |    
+# | |__) |   ___  | (___     ___    __ _   _ __    ___  | |__  
+# |  _  /   / _ \  \___ \   / _ \  / _` | | '__|  / __| | '_ \ 
+# | | \ \  |  __/  ____) | |  __/ | (_| | | |    | (__  | | | |
+# |_|  \_\  \___| |_____/   \___|  \__,_| |_|     \___| |_| |_|
+# © Dario Contrino, Jerome Kaspar
+# """
+RESEARCH_HEADER_ASCII = """   ____     __  __ _____   __   ______
+  / __ \   / / / //_  _/  / /  /_   _/
+ / / / /  / / / /  / /   / /    / /   
+/ /_/ /  / /_/ / _/ /_  / /___ / /    
+\___\_\ /_____/ /____/ /_____//_/     
 © Dario Contrino, Jerome Kaspar
 """
 
@@ -499,7 +506,7 @@ class GraphView(urwid.WidgetWrap):
         self.butty_csv2excel_attr = urwid.AttrMap(self.butty_csv2excel, "button_normal", focus_map="button_select")
         self.butty_comparator = urwid.Button(u"comparator", on_press=self.comparator_action)
         self.butty_comparator_attr = urwid.AttrMap(self.butty_comparator, "button_normal", focus_map="button_select")
-        self.butty_merge = urwid.Button(u"merge", on_press=self.merge_action)
+        self.butty_merge = urwid.Button(u"merger", on_press=self.merge_action)
         self.butty_merge_attr = urwid.AttrMap(self.butty_merge, "button_normal", focus_map="button_select")
         self.butty_authoring = urwid.Button(u"authoring", on_press=self.authoring_action)
         self.butty_authoring_attr = urwid.AttrMap(self.butty_authoring, "button_normal", focus_map="button_select")

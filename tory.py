@@ -201,10 +201,11 @@ class GraphView(urwid.WidgetWrap):
         self.pipelines.append(data)
     
     def update_text(self, read_data):
+        read_data = self.byte2str(read_data)
         self.saveLines(self.byte2str(read_data))
         if type(read_data) == bytes:
-            if '|' in read_data.decode():
-                lines = read_data.decode().split('\n')
+            if '|' in read_data:
+                lines = read_data.split('\n')
                 for l in lines:
                     if l.split('|')[0] != '':
                         self.addText2TextWidget(self.right_text_box, l.split('|')[0])

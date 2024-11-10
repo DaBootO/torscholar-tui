@@ -190,6 +190,8 @@ class GraphView(urwid.WidgetWrap):
             text = codecs.decode(data, "UTF-8")
         except(TypeError):
             text = data
+        except(UnicodeDecodeError):
+            text = data
         return text
     
     def addText2TextWidget(self, widget, updateText):

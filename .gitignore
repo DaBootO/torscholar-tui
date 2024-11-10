@@ -8,3 +8,4 @@
 */BACKUP
 *.pkl
 *.pyc*
+.venv/
